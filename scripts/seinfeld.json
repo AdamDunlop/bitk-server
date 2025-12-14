@@ -1,0 +1,10 @@
+{
+  "title": "Seinfeld - Short Scene",
+  "characters": ["Jerry", "George", "Elaine"],
+  "lines": [
+    { "id": "1", "character": "Jerry", "text": "Hello." },
+    { "id": "2", "character": "George", "text": "How are you?" },
+    { "id": "3", "character": "Elaine", "text": "Don't ask him anything." },
+    { "id": "4", "character": "Jerry", "text": "What happened?" }
+  ]
+}
