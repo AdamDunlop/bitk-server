@@ -4,6 +4,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
+
 const app = express();
 app.use(cors());
 
@@ -65,19 +66,18 @@ io.on("connection", (socket) => {
 
   /* ---------------- CREATE ROOM ---------------- */
   socket.on("createRoom", ({ roomName }) => {
-    if (!roomName || rooms[roomName]) return;
+    if (!rooms[roomName]) {
+      rooms[roomName] = {
+        admin: socket.data.username,
+        members: {},            // ✅ REQUIRED
+        script: null,
+        scriptData: null,
+        characterAssignments: {},
+      };
+    }
 
-    rooms[roomName] = {
-      admin: socket.data.username,
-      members: {},
-      script: null,
-      scriptData: null,
-      characterAssignments: {},
-    };
-
-    roomList.push(roomName);
+    roomList = Object.keys(rooms);
     io.emit("rooms", roomList);
-
     console.log("Room created:", roomName);
   });
 
@@ -87,7 +87,7 @@ io.on("connection", (socket) => {
 
     const name = username || socket.data.username || "Unknown";
 
-    
+
     rooms[room].members[socket.id] = name;
     socket.join(room);
 
@@ -147,22 +147,35 @@ io.on("connection", (socket) => {
   });
 
   /* ---------------- SELECT SCRIPT (ADMIN) ---------------- */
-  socket.on("selectScript", ({ room, scriptName, scriptData }) => {
-    rooms[room].script = scriptName;
-    rooms[room].scriptData = scriptData;
+  socket.on("selectScript", ({ room, scriptName }) => {
+    const roomInfo = rooms[room];
+    if (!roomInfo) return;
+
+    // ✅ persist room state
+    roomInfo.script = scriptName;
+    roomInfo.scriptData = SCRIPTS[scriptName];
+    roomInfo.characterAssignments = {}; // reset on new script
+
     io.to(room).emit("scriptSelected", {
       scriptName,
-      scriptData,
-      admin: rooms[room].admin,
+      scriptData: roomInfo.scriptData,
+      admin: roomInfo.admin,
     });
   });
 
+
   /* ---------------- SELECT CHARACTER ---------------- */
   socket.on("selectCharacter", ({ room, character, username }) => {
-    rooms[room].characterAssignments[character] = username;
-    io.to(room).emit("characterAssigned", { character, username });
-  });
+    const roomInfo = rooms[room];
+    if (!roomInfo) return;
 
+    // Prevent stealing characters
+    if (roomInfo.characterAssignments[character]) return;
+
+    roomInfo.characterAssignments[character] = username;
+
+    io.to(room).emit("characterAssignments", roomInfo.characterAssignments);
+  });
   /* ---------------- UNSELECT CHARACTER ---------------- */
   socket.on("unselectCharacter", ({ room, character, username }) => {
     if (
@@ -180,14 +193,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("scriptSelected", ({ scriptName, scriptData, admin }) => {
-    setSelectedScriptName(scriptName);
-    setScriptData(scriptData);
-    setIsAdmin(admin === username);
+    setSelectedScript(scriptName);   // key name
+    setScriptData(scriptData);       // full object
+    setCharacterAssignments({});     // reset
+    setIsAdmin(admin === username);  // confirm admin
   });
 
   /* ---------------- DISCONNECT ---------------- */
   socket.on("disconnect", () => {
     for (const room in rooms) {
+      if (!rooms[room].members) continue;
+
       if (rooms[room].members[socket.id]) {
         const username = rooms[room].members[socket.id];
         delete rooms[room].members[socket.id];
@@ -201,7 +217,8 @@ io.on("connection", (socket) => {
       }
     }
     console.log("Socket disconnected:", socket.id);
-  });
+  }); // 👈 THIS ONE IS EASY TO MISS
+
 });
 
 server.listen(3000, () => {
