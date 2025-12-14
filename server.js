@@ -240,7 +240,13 @@ io.on("connection", (socket) => {
       scriptData: roomInfo.scriptData,
       characterAssignments: roomInfo.characterAssignments,
     });
+    
+    // io.to(room).emit("karaokeLine", {
+    //   lineIndex: currentLineIndex
+    // });
+
   });
+
 
   /* ---------------- DISCONNECT ---------------- */
   socket.on("disconnect", () => {
