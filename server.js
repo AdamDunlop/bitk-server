@@ -4,7 +4,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
-
 const app = express();
 app.use(cors());
 
@@ -21,7 +20,8 @@ const io = new Server(server, {
  *     members: { socketId: username },
  *     script: null | scriptName,
  *     scriptData: null | { characters: [], lines: [] },
- *     characterAssignments: { character: username }
+ *     characterAssignments: { character: username },
+ *     sceneStarted: boolean
  *   }
  * }
  */
@@ -30,9 +30,25 @@ let roomList = [];
 
 /**
  * Example script data
- * (Later this can come from files or DB)
  */
 const SCRIPTS = {
+  seinfeld_opposite: {
+    characters: ["Jerry", "George", "Elaine", "Waitress", "Victoria"],
+    lines: [
+      { id: 1, character: "Jerry", text: "Speaking of having it all... Where were you?" },
+      { id: 2, character: "George", text: "I went to the, the beach." },
+      { id: 3, character: "George", text: "It's not working, Jerry. It's just not working." },
+      { id: 4, character: "Jerry", text: "What is it that isn't working?" },
+      { id: 5, character: "George", text: "Why did it all turn out like this for me? I had so much promise. I was personable, I was bright. Oh, maybe not academically speaking, but ... I was perceptive. I always know when someone's uncomfortable at a party. It became very clear to me sitting out there today, that every decision I've ever made, in my entire life, has been wrong. My life is the opposite of everything I want it to be. Every instinct I have, in every of life, be it something to wear, something to eat ... It's all been wrong." },
+      { id: 6, character: "Waitress", text: "Tuna on toast, coleslaw, cup of coffee." },
+      { id: 7, character: "George", text: "Yeah. No, no, no, wait a minute, I always have tuna on toast. Nothing's ever worked out for me with tuna on toast. I want the complete opposite of on toast. Chicken salad, on rye, untoasted ... and a cup of tea." },
+      { id: 8, character: "Elaine", text: "Well, there's no telling what can happen from this." },
+      { id: 9, character: "Jerry", text: "You know chicken salad is not the opposite of tuna, salmon is the opposite of tuna, 'cos salmon swim against the current, and the tuna swim with it." },
+      { id: 10, character: "George",  text: "Good for the tuna.(Sarcasticly)" },
+      { id: 11, character: "Victoria", text: "Oh, yes I was, you just ordered the same exact lunch as me." },
+      { id: 1, character: "George", text: "My name is George. I'm unemployed and I live with my parents." }
+    ]
+  },
   seinfeld: {
     characters: ["Jerry", "George", "Elaine", "Kramer"],
     lines: [
@@ -59,8 +75,9 @@ io.on("connection", (socket) => {
   /* ---------------- LOGIN ---------------- */
   socket.on("login", ({ username }) => {
     socket.data.username = username;
+
     socket.emit("rooms", roomList);
-    socket.emit("availableScripts", Object.keys(SCRIPTS));
+    socket.emit("scriptList", Object.keys(SCRIPTS)); // send scripts to client
     console.log("Login:", username);
   });
 
@@ -69,10 +86,11 @@ io.on("connection", (socket) => {
     if (!rooms[roomName]) {
       rooms[roomName] = {
         admin: socket.data.username,
-        members: {},            // ✅ REQUIRED
+        members: {},
         script: null,
         scriptData: null,
         characterAssignments: {},
+        sceneStarted: false,
       };
     }
 
@@ -86,24 +104,19 @@ io.on("connection", (socket) => {
     if (!room || !rooms[room]) return;
 
     const name = username || socket.data.username || "Unknown";
-
-
     rooms[room].members[socket.id] = name;
     socket.join(room);
 
-
-    io.to(room).emit('roomState', {
+    // emit only room state
+    io.to(room).emit("roomState", {
       users: Object.values(rooms[room].members),
       admin: rooms[room].admin,
-      script: rooms[room].script || null,
     });
 
-    // notify others
-    socket.to(room).emit("userJoinedRoom", { username: name });
-    socket.emit("availableScripts", Object.keys(SCRIPTS));
+    // send available scripts
+    socket.emit("scriptList", Object.keys(SCRIPTS));
 
-
-    // send script state if exists
+    // send script state if already selected
     if (rooms[room].script) {
       socket.emit("scriptSelected", {
         scriptName: rooms[room].script,
@@ -111,21 +124,23 @@ io.on("connection", (socket) => {
         admin: rooms[room].admin,
       });
 
-      socket.emit(
+      io.to(room).emit(
         "characterAssignments",
         rooms[room].characterAssignments
       );
     }
 
+    // notify others
+    socket.to(room).emit("userJoinedRoom", { username: name });
     console.log(`${name} joined room ${room}`);
   });
-  
-  socket.on('deleteRoom', ({ roomName }) => {
+
+  /* ---------------- DELETE ROOM ---------------- */
+  socket.on("deleteRoom", ({ roomName }) => {
     delete rooms[roomName];
     roomList = Object.keys(rooms);
-    io.emit('rooms', roomList);
+    io.emit("rooms", roomList);
   });
-
 
   /* ---------------- LEAVE ROOM ---------------- */
   socket.on("leaveRoom", ({ room }) => {
@@ -133,12 +148,23 @@ io.on("connection", (socket) => {
 
     const username = rooms[room].members[socket.id];
     delete rooms[room].members[socket.id];
-
     socket.leave(room);
 
+    // Remove any character assignments held by this user
+    for (const character in rooms[room].characterAssignments) {
+      if (rooms[room].characterAssignments[character] === username) {
+        delete rooms[room].characterAssignments[character];
+      }
+    }
+
+    // Emit updated state
     io.to(room).emit(
       "roomUsers",
       Object.values(rooms[room].members)
+    );
+    io.to(room).emit(
+      "characterAssignments",
+      rooms[room].characterAssignments
     );
 
     if (username) {
@@ -146,15 +172,16 @@ io.on("connection", (socket) => {
     }
   });
 
+
   /* ---------------- SELECT SCRIPT (ADMIN) ---------------- */
   socket.on("selectScript", ({ room, scriptName }) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
 
-    // ✅ persist room state
     roomInfo.script = scriptName;
     roomInfo.scriptData = SCRIPTS[scriptName];
-    roomInfo.characterAssignments = {}; // reset on new script
+    roomInfo.characterAssignments = {};
+    roomInfo.sceneStarted = false;
 
     io.to(room).emit("scriptSelected", {
       scriptName,
@@ -163,9 +190,8 @@ io.on("connection", (socket) => {
     });
   });
 
-
   /* ---------------- SELECT CHARACTER ---------------- */
-  socket.on("selectCharacter", ({ room, character, username }) => {
+  socket.on("assignCharacter", ({ room, character, username }) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
 
@@ -174,29 +200,46 @@ io.on("connection", (socket) => {
 
     roomInfo.characterAssignments[character] = username;
 
-    io.to(room).emit("characterAssignments", roomInfo.characterAssignments);
+    io.to(room).emit(
+      "characterAssignments",
+      roomInfo.characterAssignments
+    );
   });
+
   /* ---------------- UNSELECT CHARACTER ---------------- */
   socket.on("unselectCharacter", ({ room, character, username }) => {
-    if (
-      rooms[room]?.characterAssignments[character] === username
-    ) {
-      delete rooms[room].characterAssignments[character];
+    const roomInfo = rooms[room];
+    if (!roomInfo) return;
+
+    if (roomInfo.characterAssignments[character] === username) {
+      delete roomInfo.characterAssignments[character];
       io.to(room).emit(
         "characterAssignments",
-        rooms[room].characterAssignments
+        roomInfo.characterAssignments
       );
     }
   });
-  socket.on("availableScripts", (scripts) => {
-    setAvailableScripts(scripts);
-  });
 
-  socket.on("scriptSelected", ({ scriptName, scriptData, admin }) => {
-    setSelectedScript(scriptName);   // key name
-    setScriptData(scriptData);       // full object
-    setCharacterAssignments({});     // reset
-    setIsAdmin(admin === username);  // confirm admin
+  /* ---------------- START SCENE ---------------- */
+  socket.on("startScene", ({ room }) => {
+    const roomInfo = rooms[room];
+    if (!roomInfo || !roomInfo.scriptData) return;
+
+    const allAssigned = roomInfo.scriptData.characters.every(
+      (ch) => roomInfo.characterAssignments[ch]
+    );
+
+    if (!allAssigned) {
+      socket.emit("errorMessage", "All characters must be assigned");
+      return;
+    }
+
+    roomInfo.sceneStarted = true;
+
+    io.to(room).emit("sceneStarted", {
+      scriptData: roomInfo.scriptData,
+      characterAssignments: roomInfo.characterAssignments,
+    });
   });
 
   /* ---------------- DISCONNECT ---------------- */
@@ -209,7 +252,7 @@ io.on("connection", (socket) => {
         delete rooms[room].members[socket.id];
 
         io.to(room).emit(
-          "roomUsers",
+          "roomState",
           Object.values(rooms[room].members)
         );
 
@@ -217,8 +260,7 @@ io.on("connection", (socket) => {
       }
     }
     console.log("Socket disconnected:", socket.id);
-  }); // 👈 THIS ONE IS EASY TO MISS
-
+  });
 });
 
 server.listen(3000, () => {
