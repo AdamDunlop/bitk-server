@@ -3,6 +3,8 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 app.use(cors());
@@ -29,47 +31,42 @@ let rooms = {};
 let roomList = [];
 
 /**
- * Example script data
+ * ---------------- LOAD SCRIPTS FROM JSON ----------------
  */
-const SCRIPTS = {
-  seinfeld_opposite: {
-    characters: ["Jerry", "George", "Elaine", "Waitress", "Victoria"],
-    lines: [
-      { id: 1, character: "Jerry", text: "Speaking of having it all... Where were you?" },
-      { id: 2, character: "George", text: "I went to the, the beach." },
-      { id: 3, character: "George", text: "It's not working, Jerry. It's just not working." },
-      { id: 4, character: "Jerry", text: "What is it that isn't working?" },
-      { id: 5, character: "George", text: "Why did it all turn out like this for me? I had so much promise. I was personable, I was bright. Oh, maybe not academically speaking, but ... I was perceptive. I always know when someone's uncomfortable at a party. It became very clear to me sitting out there today, that every decision I've ever made, in my entire life, has been wrong. My life is the opposite of everything I want it to be. Every instinct I have, in every of life, be it something to wear, something to eat ... It's all been wrong." },
-      { id: 6, character: "Waitress", text: "Tuna on toast, coleslaw, cup of coffee." },
-      { id: 7, character: "George", text: "Yeah. No, no, no, wait a minute, I always have tuna on toast. Nothing's ever worked out for me with tuna on toast. I want the complete opposite of on toast. Chicken salad, on rye, untoasted ... and a cup of tea." },
-      { id: 8, character: "Elaine", text: "Well, there's no telling what can happen from this." },
-      { id: 9, character: "Jerry", text: "You know chicken salad is not the opposite of tuna, salmon is the opposite of tuna, 'cos salmon swim against the current, and the tuna swim with it." },
-      { id: 10, character: "George",  text: "Good for the tuna.(Sarcasticly)" },
-      { id: 11, character: "Victoria", text: "Oh, yes I was, you just ordered the same exact lunch as me." },
-      { id: 1, character: "George", text: "My name is George. I'm unemployed and I live with my parents." }
-    ]
-  },
-  seinfeld: {
-    characters: ["Jerry", "George", "Elaine", "Kramer"],
-    lines: [
-      { id: 1, character: "Jerry", text: "What's the deal with airline food?" },
-      { id: 2, character: "George", text: "I was in the pool!" },
-      { id: 3, character: "Elaine", text: "Get out!" },
-      { id: 4, character: "Kramer", text: "Giddy up!" },
-    ],
-  },
-  friends: {
-    characters: ["Ross", "Rachel", "Chandler", "Monica"],
-    lines: [
-      { id: 1, character: "Ross", text: "We were on a break!" },
-      { id: 2, character: "Rachel", text: "No, we were not!" },
-      { id: 3, character: "Chandler", text: "Could I BE any more sarcastic?" },
-      { id: 4, character: "Monica", text: "I know!" },
-    ],
-  },
-};
+function loadAllScripts() {
+  const scriptsDir = path.join(__dirname, "scripts");
+  if (!fs.existsSync(scriptsDir)) return {};
 
+  const scriptFiles = fs.readdirSync(scriptsDir).filter((f) => f.endsWith(".json"));
+  const scripts = {};
 
+  scriptFiles.forEach((file) => {
+    const filePath = path.join(scriptsDir, file);
+    const rawData = fs.readFileSync(filePath, "utf-8");
+    const json = JSON.parse(rawData);
+
+    if (!json.scripts) return;
+
+    json.scripts.forEach((script) => {
+      scripts[script.name] = { ...script, type: json.type };
+    });
+  });
+
+  return scripts;
+}
+
+let SCRIPTS = loadAllScripts();
+
+/**
+ * Optional: get scripts filtered by type
+ */
+function getScriptsByType(type) {
+  return Object.values(SCRIPTS).filter((script) => script.type === type);
+}
+
+/**
+ * ---------------- SOCKET CONNECTION ----------------
+ */
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
 
@@ -77,7 +74,10 @@ io.on("connection", (socket) => {
   socket.on("login", ({ username }) => {
     socket.data.username = username;
     socket.emit("rooms", roomList);
-    socket.emit("scriptList", Object.keys(SCRIPTS));
+
+    // send full script objects for client filtering
+    socket.emit("scriptListFull", Object.values(SCRIPTS));
+
     console.log("Login:", username);
   });
 
@@ -111,7 +111,8 @@ io.on("connection", (socket) => {
       admin: rooms[room].admin,
     });
 
-    socket.emit("scriptList", Object.keys(SCRIPTS));
+    // send full scripts for filtering
+    socket.emit("scriptListFull", Object.values(SCRIPTS));
 
     if (rooms[room].script) {
       socket.emit("scriptSelected", {
@@ -155,7 +156,7 @@ io.on("connection", (socket) => {
   /* ---------------- SELECT SCRIPT ---------------- */
   socket.on("selectScript", ({ room, scriptName }) => {
     const roomInfo = rooms[room];
-    if (!roomInfo) return;
+    if (!roomInfo || !SCRIPTS[scriptName]) return;
 
     roomInfo.script = scriptName;
     roomInfo.scriptData = SCRIPTS[scriptName];
@@ -186,7 +187,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  /* ---------------- START SCENE WITH SYNCHRONIZED LINES ---------------- */
+  /* ---------------- START SCENE ---------------- */
   socket.on("startScene", ({ room }) => {
     const roomInfo = rooms[room];
     if (!roomInfo || !roomInfo.scriptData) return;
@@ -201,12 +202,12 @@ io.on("connection", (socket) => {
     }
 
     roomInfo.sceneStarted = true;
-    roomInfo.currentLineIndex = 0; // NEW: track current line
+    roomInfo.currentLineIndex = 0;
 
     io.to(room).emit("sceneStarted", {
       scriptData: roomInfo.scriptData,
       characterAssignments: roomInfo.characterAssignments,
-      currentLineIndex: roomInfo.currentLineIndex, // send initial line
+      currentLineIndex: roomInfo.currentLineIndex,
     });
   });
 
@@ -221,11 +222,10 @@ io.on("connection", (socket) => {
         currentLineIndex: roomInfo.currentLineIndex,
       });
     } else {
-      // Scene finished
       roomInfo.sceneStarted = false;
       io.to(room).emit("sceneEnded");
     }
-});
+  });
 
   /* ---------------- DISCONNECT ---------------- */
   socket.on("disconnect", () => {

@@ -1,0 +1,24 @@
+{
+  "type": "sitcom",
+  "scripts": [
+    {
+      "name": "seinfeld",
+      "title": "The contest",
+      "characters": ["Jerry", "George", "Elaine", "Waitress", "Victoria"],
+      "lines": [
+      { "id": 1, "character": "Jerry", "text": "Speaking of having it all... Where were you?" },
+      { "id": 2, "character": "George", "text": "I went to the, the beach." },
+      { "id": 3, "character": "George", "text": "It's not working, Jerry. It's just not working." },
+      { "id": 4, "character": "Jerry", "text": "What is it that isn't working?" },
+      { "id": 5, "character": "George", "text": "Why did it all turn out like this for me? I had so much promise. I was personable, I was bright. Oh, maybe not academically speaking, but ... I was perceptive. I always know when someone's uncomfortable at a party. It became very clear to me sitting out there today, that every decision I've ever made, in my entire life, has been wrong. My life is the opposite of everything I want it to be. Every instinct I have, in every of life, be it something to wear, something to eat ... It's all been wrong." },
+      { "id": 6, "character": "Waitress", "text": "Tuna on toast, coleslaw, cup of coffee." },
+      { "id": 7, "character": "George", "text": "Yeah. No, no, no, wait a minute, I always have tuna on toast. Nothing's ever worked out for me with tuna on toast. I want the complete opposite of on toast. Chicken salad, on rye, untoasted ... and a cup of tea." },
+      { "id": 8, "character": "Elaine", "text": "Well, there's no telling what can happen from this." },
+      { "id": 9, "character": "Jerry", "text": "You know chicken salad is not the opposite of tuna, salmon is the opposite of tuna, 'cos salmon swim against the current, and the tuna swim with it." },
+      { "id": 10, "character": "George",  "text": "Good for the tuna.(Sarcasticly)" },
+      { "id": 11, "character": "Victoria", "text": "Oh, yes I was, you just ordered the same exact lunch as me." },
+      { "id": 12, "character": "George", "text": "My name is George. I'm unemployed and I live with my parents." }
+      ]
+    }
+  ]
+}
