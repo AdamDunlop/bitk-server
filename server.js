@@ -69,15 +69,15 @@ const SCRIPTS = {
   },
 };
 
+
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
 
   /* ---------------- LOGIN ---------------- */
   socket.on("login", ({ username }) => {
     socket.data.username = username;
-
     socket.emit("rooms", roomList);
-    socket.emit("scriptList", Object.keys(SCRIPTS)); // send scripts to client
+    socket.emit("scriptList", Object.keys(SCRIPTS));
     console.log("Login:", username);
   });
 
@@ -93,7 +93,6 @@ io.on("connection", (socket) => {
         sceneStarted: false,
       };
     }
-
     roomList = Object.keys(rooms);
     io.emit("rooms", roomList);
     console.log("Room created:", roomName);
@@ -107,30 +106,22 @@ io.on("connection", (socket) => {
     rooms[room].members[socket.id] = name;
     socket.join(room);
 
-    // emit only room state
     io.to(room).emit("roomState", {
       users: Object.values(rooms[room].members),
       admin: rooms[room].admin,
     });
 
-    // send available scripts
     socket.emit("scriptList", Object.keys(SCRIPTS));
 
-    // send script state if already selected
     if (rooms[room].script) {
       socket.emit("scriptSelected", {
         scriptName: rooms[room].script,
         scriptData: rooms[room].scriptData,
         admin: rooms[room].admin,
       });
-
-      io.to(room).emit(
-        "characterAssignments",
-        rooms[room].characterAssignments
-      );
+      io.to(room).emit("characterAssignments", rooms[room].characterAssignments);
     }
 
-    // notify others
     socket.to(room).emit("userJoinedRoom", { username: name });
     console.log(`${name} joined room ${room}`);
   });
@@ -145,35 +136,23 @@ io.on("connection", (socket) => {
   /* ---------------- LEAVE ROOM ---------------- */
   socket.on("leaveRoom", ({ room }) => {
     if (!rooms[room]) return;
-
     const username = rooms[room].members[socket.id];
     delete rooms[room].members[socket.id];
     socket.leave(room);
 
-    // Remove any character assignments held by this user
     for (const character in rooms[room].characterAssignments) {
       if (rooms[room].characterAssignments[character] === username) {
         delete rooms[room].characterAssignments[character];
       }
     }
 
-    // Emit updated state
-    io.to(room).emit(
-      "roomUsers",
-      Object.values(rooms[room].members)
-    );
-    io.to(room).emit(
-      "characterAssignments",
-      rooms[room].characterAssignments
-    );
+    io.to(room).emit("roomUsers", Object.values(rooms[room].members));
+    io.to(room).emit("characterAssignments", rooms[room].characterAssignments);
 
-    if (username) {
-      socket.to(room).emit("userLeft", username);
-    }
+    if (username) socket.to(room).emit("userLeft", username);
   });
 
-
-  /* ---------------- SELECT SCRIPT (ADMIN) ---------------- */
+  /* ---------------- SELECT SCRIPT ---------------- */
   socket.on("selectScript", ({ room, scriptName }) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
@@ -190,37 +169,24 @@ io.on("connection", (socket) => {
     });
   });
 
-  /* ---------------- SELECT CHARACTER ---------------- */
+  /* ---------------- CHARACTER ASSIGNMENT ---------------- */
   socket.on("assignCharacter", ({ room, character, username }) => {
     const roomInfo = rooms[room];
-    if (!roomInfo) return;
-
-    // Prevent stealing characters
-    if (roomInfo.characterAssignments[character]) return;
-
+    if (!roomInfo || roomInfo.characterAssignments[character]) return;
     roomInfo.characterAssignments[character] = username;
-
-    io.to(room).emit(
-      "characterAssignments",
-      roomInfo.characterAssignments
-    );
+    io.to(room).emit("characterAssignments", roomInfo.characterAssignments);
   });
 
-  /* ---------------- UNSELECT CHARACTER ---------------- */
   socket.on("unselectCharacter", ({ room, character, username }) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
-
     if (roomInfo.characterAssignments[character] === username) {
       delete roomInfo.characterAssignments[character];
-      io.to(room).emit(
-        "characterAssignments",
-        roomInfo.characterAssignments
-      );
+      io.to(room).emit("characterAssignments", roomInfo.characterAssignments);
     }
   });
 
-  /* ---------------- START SCENE ---------------- */
+  /* ---------------- START SCENE WITH SYNCHRONIZED LINES ---------------- */
   socket.on("startScene", ({ room }) => {
     const roomInfo = rooms[room];
     if (!roomInfo || !roomInfo.scriptData) return;
@@ -235,33 +201,41 @@ io.on("connection", (socket) => {
     }
 
     roomInfo.sceneStarted = true;
+    roomInfo.currentLineIndex = 0; // NEW: track current line
 
     io.to(room).emit("sceneStarted", {
       scriptData: roomInfo.scriptData,
       characterAssignments: roomInfo.characterAssignments,
+      currentLineIndex: roomInfo.currentLineIndex, // send initial line
     });
-    
-    // io.to(room).emit("karaokeLine", {
-    //   lineIndex: currentLineIndex
-    // });
-
   });
 
+  /* ---------------- ADVANCE LINE ---------------- */
+  socket.on("advanceLine", ({ room }) => {
+    const roomInfo = rooms[room];
+    if (!roomInfo || !roomInfo.sceneStarted) return;
+
+    if (roomInfo.currentLineIndex < roomInfo.scriptData.lines.length - 1) {
+      roomInfo.currentLineIndex += 1;
+      io.to(room).emit("currentLineUpdate", {
+        currentLineIndex: roomInfo.currentLineIndex,
+      });
+    } else {
+      // Scene finished
+      roomInfo.sceneStarted = false;
+      io.to(room).emit("sceneEnded");
+    }
+});
 
   /* ---------------- DISCONNECT ---------------- */
   socket.on("disconnect", () => {
     for (const room in rooms) {
       if (!rooms[room].members) continue;
-
       if (rooms[room].members[socket.id]) {
         const username = rooms[room].members[socket.id];
         delete rooms[room].members[socket.id];
 
-        io.to(room).emit(
-          "roomState",
-          Object.values(rooms[room].members)
-        );
-
+        io.to(room).emit("roomState", Object.values(rooms[room].members));
         socket.to(room).emit("userLeft", username);
       }
     }
