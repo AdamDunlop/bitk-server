@@ -87,17 +87,21 @@ io.on("connection", (socket) => {
 
     const name = username || socket.data.username || "Unknown";
 
+    
     rooms[room].members[socket.id] = name;
     socket.join(room);
 
-    // send user list
-    io.to(room).emit(
-      "roomUsers",
-      Object.values(rooms[room].members)
-    );
+
+    io.to(room).emit('roomState', {
+      users: Object.values(rooms[room].members),
+      admin: rooms[room].admin,
+      script: rooms[room].script || null,
+    });
 
     // notify others
     socket.to(room).emit("userJoinedRoom", { username: name });
+    socket.emit("availableScripts", Object.keys(SCRIPTS));
+
 
     // send script state if exists
     if (rooms[room].script) {
@@ -115,6 +119,13 @@ io.on("connection", (socket) => {
 
     console.log(`${name} joined room ${room}`);
   });
+  
+  socket.on('deleteRoom', ({ roomName }) => {
+    delete rooms[roomName];
+    roomList = Object.keys(rooms);
+    io.emit('rooms', roomList);
+  });
+
 
   /* ---------------- LEAVE ROOM ---------------- */
   socket.on("leaveRoom", ({ room }) => {
@@ -136,39 +147,20 @@ io.on("connection", (socket) => {
   });
 
   /* ---------------- SELECT SCRIPT (ADMIN) ---------------- */
-  socket.on("selectScript", ({ room, scriptName }) => {
-    if (!rooms[room]) return;
-    if (rooms[room].admin !== socket.data.username) return;
-
-    const script = SCRIPTS[scriptName];
-    if (!script) return;
-
+  socket.on("selectScript", ({ room, scriptName, scriptData }) => {
     rooms[room].script = scriptName;
-    rooms[room].scriptData = script;
-    rooms[room].characterAssignments = {};
-
+    rooms[room].scriptData = scriptData;
     io.to(room).emit("scriptSelected", {
       scriptName,
-      scriptData: script,
+      scriptData,
       admin: rooms[room].admin,
     });
-
-    console.log("Script selected:", scriptName, "in room", room);
   });
 
   /* ---------------- SELECT CHARACTER ---------------- */
   socket.on("selectCharacter", ({ room, character, username }) => {
-    if (!rooms[room] || !rooms[room].scriptData) return;
-
-    // prevent double-claim
-    if (rooms[room].characterAssignments[character]) return;
-
     rooms[room].characterAssignments[character] = username;
-
-    io.to(room).emit("characterAssigned", {
-      character,
-      username,
-    });
+    io.to(room).emit("characterAssigned", { character, username });
   });
 
   /* ---------------- UNSELECT CHARACTER ---------------- */
@@ -182,6 +174,15 @@ io.on("connection", (socket) => {
         rooms[room].characterAssignments
       );
     }
+  });
+  socket.on("availableScripts", (scripts) => {
+    setAvailableScripts(scripts);
+  });
+
+  socket.on("scriptSelected", ({ scriptName, scriptData, admin }) => {
+    setSelectedScriptName(scriptName);
+    setScriptData(scriptData);
+    setIsAdmin(admin === username);
   });
 
   /* ---------------- DISCONNECT ---------------- */
