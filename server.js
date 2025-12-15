@@ -227,11 +227,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  socketRef.current.on("sceneFinished", () => {
-    setSceneStarted(true);
-    setSceneCanEnd(true); // <-- show the End Scene button
-  });
-
   /* ---------------- DISCONNECT ---------------- */
   socket.on("disconnect", () => {
     for (const room in rooms) {
