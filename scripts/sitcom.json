@@ -3,7 +3,7 @@
   "scripts": [
     {
       "name": "seinfeld",
-      "title": "The contest",
+      "title": "The Opposite",
       "characters": ["Jerry", "George", "Elaine", "Waitress", "Victoria"],
       "lines": [
       { "id": 1, "character": "Jerry", "text": "Speaking of having it all... Where were you?" },

@@ -222,9 +222,14 @@ io.on("connection", (socket) => {
         currentLineIndex: roomInfo.currentLineIndex,
       });
     } else {
-      roomInfo.sceneStarted = false;
-      io.to(room).emit("sceneEnded");
+      // Instead of auto-reset:
+      io.to(room).emit("sceneFinished"); // <- new event
     }
+  });
+
+  socketRef.current.on("sceneFinished", () => {
+    setSceneStarted(true);
+    setSceneCanEnd(true); // <-- show the End Scene button
   });
 
   /* ---------------- DISCONNECT ---------------- */
