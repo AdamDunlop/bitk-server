@@ -67,19 +67,28 @@ function getScriptsByType(type) {
 /**
  * ---------------- SOCKET CONNECTION ----------------
  */
-io.on("connection", (socket) => {
-  console.log("Socket connected:", socket.id);
+let loggedInUsers = {}; // socketId -> username
 
-  /* ---------------- LOGIN ---------------- */
+io.on("connection", (socket) => {
   socket.on("login", ({ username }) => {
     socket.data.username = username;
-    socket.emit("rooms", roomList);
+    loggedInUsers[socket.id] = username;
 
-    // send full script objects for client filtering
+    // send updated user list to everyone
+    io.emit("activeUsers", Object.values(loggedInUsers));
+
+    socket.emit("rooms", roomList);
     socket.emit("scriptListFull", Object.values(SCRIPTS));
 
     console.log("Login:", username);
   });
+
+  socket.on("disconnect", () => {
+    delete loggedInUsers[socket.id];
+    io.emit("activeUsers", Object.values(loggedInUsers));
+    console.log("Socket disconnected:", socket.id);
+  });
+
 
   /* ---------------- CREATE ROOM ---------------- */
   socket.on("createRoom", ({ roomName }) => {
