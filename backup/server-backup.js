@@ -8,32 +8,29 @@ const path = require("path");
 
 const app = express();
 app.use(cors());
-app.use("/audio", express.static(path.join(__dirname, "assets/audio")));
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*" },
 });
 
-/* ----------------- GLOBAL STATE ----------------- */
+// ----------------- ROOMS -----------------
 let rooms = {};
 let roomList = [];
-let activeUsers = [];
 
-/* ----------------- LOAD SCRIPTS ----------------- */
+// ----------------- LOAD SCRIPTS -----------------
 function loadAllScripts() {
   const scriptsDir = path.join(__dirname, "scripts");
   if (!fs.existsSync(scriptsDir)) return {};
 
-  const scriptFiles = fs
-    .readdirSync(scriptsDir)
-    .filter((f) => f.endsWith(".json"));
+  const scriptFiles = fs.readdirSync(scriptsDir).filter((f) => f.endsWith(".json"));
   const scripts = {};
 
   scriptFiles.forEach((file) => {
     const filePath = path.join(scriptsDir, file);
     const rawData = fs.readFileSync(filePath, "utf-8");
     const json = JSON.parse(rawData);
+
     if (!json.scripts) return;
 
     json.scripts.forEach((script) => {
@@ -46,28 +43,18 @@ function loadAllScripts() {
 
 let SCRIPTS = loadAllScripts();
 
-/* ----------------- SOCKET CONNECTION ----------------- */
+// ----------------- SOCKET CONNECTION -----------------
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
 
-  /* ---------------- LOGIN ---------------- */
+  // ---------------- LOGIN ----------------
   socket.on("login", ({ username }) => {
     socket.data.username = username;
-
-    if (!activeUsers.includes(username)) activeUsers.push(username);
-
-    console.log("Login:", username, "ActiveUsers:", activeUsers);
-
-    // Emit to all clients
-    io.emit("activeUsers", activeUsers);
-
-    // Existing emits
     socket.emit("rooms", roomList);
     socket.emit("scriptListFull", Object.values(SCRIPTS));
   });
 
-
-  /* ---------------- CREATE ROOM ---------------- */
+  // ---------------- CREATE ROOM ----------------
   socket.on("createRoom", ({ roomName }) => {
     if (!rooms[roomName]) {
       rooms[roomName] = {
@@ -77,40 +64,15 @@ io.on("connection", (socket) => {
         scriptData: null,
         characterAssignments: {},
         sceneStarted: false,
-        currentLineIndex: 0,
-        currentCharIndex: 0,
-        karaokeStep: 1,
-        baseDelay: 70,
-        punctuationDelay: 220,
-        lineTimer: null,
       };
     }
     roomList = Object.keys(rooms);
     io.emit("rooms", roomList);
-    console.log("Room created:", roomName);
   });
 
-  /* ---------------- DELETE ROOM ---------------- */
-  socket.on("deleteRoom", ({ roomName }) => {
-    if (!roomName || !rooms[roomName]) return;
-
-    if (rooms[roomName].admin !== socket.data.username) {
-      socket.emit("errorMessage", "Only the room admin can delete this room");
-      return;
-    }
-
-    if (rooms[roomName].lineTimer) clearTimeout(rooms[roomName].lineTimer);
-
-    delete rooms[roomName];
-    roomList = Object.keys(rooms);
-    io.emit("rooms", roomList);
-    console.log("Room deleted:", roomName);
-  });
-
-  /* ---------------- JOIN ROOM ---------------- */
+  // ---------------- JOIN ROOM ----------------
   socket.on("joinRoom", ({ username, room }) => {
     if (!room || !rooms[room]) return;
-
     const name = username || socket.data.username || "Unknown";
     rooms[room].members[socket.id] = name;
     socket.join(room);
@@ -128,16 +90,11 @@ io.on("connection", (socket) => {
         scriptData: rooms[room].scriptData,
         admin: rooms[room].admin,
       });
-      io.to(room).emit(
-        "characterAssignments",
-        rooms[room].characterAssignments
-      );
+      io.to(room).emit("characterAssignments", rooms[room].characterAssignments);
     }
-
-    console.log(`${name} joined room ${room}`);
   });
 
-  /* ---------------- SELECT SCRIPT ---------------- */
+  // ---------------- SELECT SCRIPT ----------------
   socket.on("selectScript", ({ room, scriptName }) => {
     const roomInfo = rooms[room];
     if (!roomInfo || !SCRIPTS[scriptName]) return;
@@ -146,8 +103,6 @@ io.on("connection", (socket) => {
     roomInfo.scriptData = SCRIPTS[scriptName];
     roomInfo.characterAssignments = {};
     roomInfo.sceneStarted = false;
-    roomInfo.currentLineIndex = 0;
-    roomInfo.currentCharIndex = 0;
 
     io.to(room).emit("scriptSelected", {
       scriptName,
@@ -156,7 +111,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  /* ---------------- CHARACTER ASSIGNMENT ---------------- */
+  // ---------------- CHARACTER ASSIGNMENT ----------------
   socket.on("assignCharacter", ({ room, character, username }) => {
     const roomInfo = rooms[room];
     if (!roomInfo || roomInfo.characterAssignments[character]) return;
@@ -173,7 +128,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  /* ---------------- START SCENE ---------------- */
+  // ---------------- START SCENE ----------------
   socket.on("startScene", ({ room }) => {
     const roomInfo = rooms[room];
     if (!roomInfo || !roomInfo.scriptData) return;
@@ -197,78 +152,74 @@ io.on("connection", (socket) => {
       currentCharIndex: roomInfo.currentCharIndex,
     });
 
-    function advanceChar() {
-      const line = roomInfo.scriptData.lines[roomInfo.currentLineIndex];
-      if (!line) return;
+    // Start the server-driven character playback
+    playScene(room);
+  });
 
-      let step = 1;
-      let delay = roomInfo.baseDelay;
+  // ---------------- SERVER-DRIVEN PLAYBACK ----------------
+  const BASE_DELAY = 16;
+  const PUNCTUATION_DELAY = 220;
 
-      for (
-        let i = 0;
-        i < roomInfo.karaokeStep &&
-        roomInfo.currentCharIndex + i < line.text.length;
-        i++
-      ) {
-        const char = line.text[roomInfo.currentCharIndex + i];
-        step = i + 1;
-        if (/[.,!?]/.test(char)) {
-          delay = roomInfo.punctuationDelay;
-          break;
-        }
-      }
+  function playScene(room) {
+    const roomInfo = rooms[room];
+    if (!roomInfo || !roomInfo.sceneStarted) return;
 
-      roomInfo.currentCharIndex += step;
+    const script = roomInfo.scriptData;
+    if (!script || !script.lines.length) return;
 
-      io.to(room).emit("lineProgress", {
-        currentLineIndex: roomInfo.currentLineIndex,
+    const lineIndex = roomInfo.currentLineIndex;
+    const line = script.lines[lineIndex];
+    if (!line) return;
+
+    // Initialize charIndex if not set
+    if (roomInfo.currentCharIndex == null) roomInfo.currentCharIndex = 0;
+
+    if (roomInfo.currentCharIndex < line.text.length) {
+      const char = line.text[roomInfo.currentCharIndex];
+      const delay = /[.,!?]/.test(char) ? PUNCTUATION_DELAY : BASE_DELAY;
+
+      roomInfo.currentCharIndex += 1;
+
+      io.to(room).emit("currentCharUpdate", {
+        currentLineIndex: lineIndex,
         currentCharIndex: roomInfo.currentCharIndex,
       });
 
-      if (roomInfo.currentCharIndex >= line.text.length) {
-        roomInfo.currentLineIndex++;
+      setTimeout(() => playScene(room), delay);
+    } else {
+      // Move to next line
+      if (roomInfo.currentLineIndex < script.lines.length - 1) {
+        roomInfo.currentLineIndex += 1;
         roomInfo.currentCharIndex = 0;
 
-        if (roomInfo.currentLineIndex >= roomInfo.scriptData.lines.length) {
-          roomInfo.sceneStarted = false;
-          io.to(room).emit("sceneFinished");
-          return;
-        }
+        io.to(room).emit("currentLineUpdate", {
+          currentLineIndex: roomInfo.currentLineIndex,
+        });
+
+        setTimeout(() => playScene(room), BASE_DELAY); // small buffer before next line
+      } else {
+        // Scene finished
+        roomInfo.sceneStarted = false;
+        io.to(room).emit("sceneFinished");
       }
-
-      roomInfo.lineTimer = setTimeout(advanceChar, delay);
     }
+  }
 
-    advanceChar();
-  });
-
-  /* ---------------- DISCONNECT ---------------- */
+  // ---------------- DISCONNECT ----------------
   socket.on("disconnect", () => {
-    const username = socket.data.username;
-
-    // Remove from global activeUsers
-    if (username) {
-      const index = activeUsers.indexOf(username);
-      if (index !== -1) activeUsers.splice(index, 1);
-      io.emit("activeUsers", activeUsers);
-    }
-
-    // Remove from any rooms
     for (const room in rooms) {
+      if (!rooms[room].members) continue;
       if (rooms[room].members[socket.id]) {
+        const username = rooms[room].members[socket.id];
         delete rooms[room].members[socket.id];
-        io.to(room).emit(
-          "roomState",
-          Object.values(rooms[room].members)
-        );
+        io.to(room).emit("roomState", Object.values(rooms[room].members));
+        socket.to(room).emit("userLeft", username);
       }
     }
-
-    console.log("Socket disconnected:", socket.id);
   });
 });
 
-/* ---------------- START SERVER ---------------- */
+// ----------------- SERVER START -----------------
 server.listen(3000, () => {
   console.log("✅ Server running on port 3000");
 });

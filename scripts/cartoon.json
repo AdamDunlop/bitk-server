@@ -4,11 +4,15 @@
     {
       "name": "Family Guy",
       "title": "Wacky Wavey",
+      "introAudio": "familyguy.mp3",
       "characters": ["Al Harrington"],
       "lines": [
-        { "id": 1, "character": "Al Harrington", "text": "Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Hi, I’m Al Harrington, President and CEO of Al Harrington’s Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Thanks to a shipping error, I am now currently overstocked on Wacky Waving Inflatable Arm Flailing Tube Men, and I am passing the savings on to you. Attract customers to your business. Make a splash at your next presentation. Keep grandma company. Protect your crops. Confuse your neighbors. African American? Hail a cab. Testify in church. Or just raise the roof. Whatever your Wacky Waving Inflatable Arm Flailing Tube Man needs are. So come on down to Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Route 2 in Weekapaug." }
+        {
+          "id": 1,
+          "character": "Al Harrington",
+          "text": "Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Hi, I’m Al Harrington, President and CEO of Al Harrington’s Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Thanks to a shipping error, I am now currently overstocked on Wacky Waving Inflatable Arm Flailing Tube Men, and I am passing the savings on to you. Attract customers to your business. Make a splash at your next presentation. Keep grandma company. Protect your crops. Confuse your neighbors. African American? Hail a cab. Testify in church. Or just raise the roof. Whatever your Wacky Waving Inflatable Arm Flailing Tube Man needs are. So come on down to Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Route 2 in Weekapaug."
+        }
       ]
     }
   ]
 }
-
