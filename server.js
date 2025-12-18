@@ -14,33 +14,19 @@ const io = new Server(server, {
   cors: { origin: "*" },
 });
 
-/* ----------------- ROOMS STRUCTURE -----------------
-rooms = {
-  roomName: {
-    admin: username,
-    members: { socketId: username },
-    script: null | scriptName,
-    scriptData: null | { characters: [], lines: [] },
-    characterAssignments: { character: username },
-    sceneStarted: boolean,
-    currentLineIndex: number,
-    currentCharIndex: number,
-    karaokeStep: number,
-    baseDelay: number,
-    punctuationDelay: number,
-    lineTimer: NodeJS.Timeout | null
-  }
-}
-*/
+/* ----------------- GLOBAL STATE ----------------- */
 let rooms = {};
 let roomList = [];
+let activeUsers = [];
 
 /* ----------------- LOAD SCRIPTS ----------------- */
 function loadAllScripts() {
   const scriptsDir = path.join(__dirname, "scripts");
   if (!fs.existsSync(scriptsDir)) return {};
 
-  const scriptFiles = fs.readdirSync(scriptsDir).filter((f) => f.endsWith(".json"));
+  const scriptFiles = fs
+    .readdirSync(scriptsDir)
+    .filter((f) => f.endsWith(".json"));
   const scripts = {};
 
   scriptFiles.forEach((file) => {
@@ -66,10 +52,19 @@ io.on("connection", (socket) => {
   /* ---------------- LOGIN ---------------- */
   socket.on("login", ({ username }) => {
     socket.data.username = username;
+
+    if (!activeUsers.includes(username)) activeUsers.push(username);
+
+    console.log("Login:", username, "ActiveUsers:", activeUsers);
+
+    // Emit to all clients
+    io.emit("activeUsers", activeUsers);
+
+    // Existing emits
     socket.emit("rooms", roomList);
     socket.emit("scriptListFull", Object.values(SCRIPTS));
-    console.log("Login:", username);
   });
+
 
   /* ---------------- CREATE ROOM ---------------- */
   socket.on("createRoom", ({ roomName }) => {
@@ -96,17 +91,14 @@ io.on("connection", (socket) => {
 
   /* ---------------- DELETE ROOM ---------------- */
   socket.on("deleteRoom", ({ roomName }) => {
-    if (!roomName) return;
+    if (!roomName || !rooms[roomName]) return;
 
-    const roomInfo = rooms[roomName];
-    if (!roomInfo) return;
-
-    if (roomInfo.admin !== socket.data.username) {
+    if (rooms[roomName].admin !== socket.data.username) {
       socket.emit("errorMessage", "Only the room admin can delete this room");
       return;
     }
 
-    if (roomInfo.lineTimer) clearTimeout(roomInfo.lineTimer);
+    if (rooms[roomName].lineTimer) clearTimeout(rooms[roomName].lineTimer);
 
     delete rooms[roomName];
     roomList = Object.keys(rooms);
@@ -135,7 +127,10 @@ io.on("connection", (socket) => {
         scriptData: rooms[room].scriptData,
         admin: rooms[room].admin,
       });
-      io.to(room).emit("characterAssignments", rooms[room].characterAssignments);
+      io.to(room).emit(
+        "characterAssignments",
+        rooms[room].characterAssignments
+      );
     }
 
     console.log(`${name} joined room ${room}`);
@@ -177,7 +172,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  /* ---------------- START SCENE (SERVER DRIVEN KARAOKE) ---------------- */
+  /* ---------------- START SCENE ---------------- */
   socket.on("startScene", ({ room }) => {
     const roomInfo = rooms[room];
     if (!roomInfo || !roomInfo.scriptData) return;
@@ -210,7 +205,8 @@ io.on("connection", (socket) => {
 
       for (
         let i = 0;
-        i < roomInfo.karaokeStep && roomInfo.currentCharIndex + i < line.text.length;
+        i < roomInfo.karaokeStep &&
+        roomInfo.currentCharIndex + i < line.text.length;
         i++
       ) {
         const char = line.text[roomInfo.currentCharIndex + i];
@@ -247,14 +243,26 @@ io.on("connection", (socket) => {
 
   /* ---------------- DISCONNECT ---------------- */
   socket.on("disconnect", () => {
+    const username = socket.data.username;
+
+    // Remove from global activeUsers
+    if (username) {
+      const index = activeUsers.indexOf(username);
+      if (index !== -1) activeUsers.splice(index, 1);
+      io.emit("activeUsers", activeUsers);
+    }
+
+    // Remove from any rooms
     for (const room in rooms) {
-      if (!rooms[room].members) continue;
       if (rooms[room].members[socket.id]) {
-        const username = rooms[room].members[socket.id];
         delete rooms[room].members[socket.id];
-        io.to(room).emit("roomState", Object.values(rooms[room].members));
+        io.to(room).emit(
+          "roomState",
+          Object.values(rooms[room].members)
+        );
       }
     }
+
     console.log("Socket disconnected:", socket.id);
   });
 });
