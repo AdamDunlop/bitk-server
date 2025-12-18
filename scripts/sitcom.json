@@ -3,21 +3,34 @@
   "scripts": [
     {
       "name": "seinfeld",
+      "introAudio": "seinfeld.mp3",
       "title": "The Opposite",
-      "characters": ["Jerry", "George", "Elaine", "Waitress", "Victoria"],
+      "characters": ["Jerry", "George", "Elaine", "Waitress", "Victoria", "Narrator"],
       "lines": [
       { "id": 1, "character": "Jerry", "text": "Speaking of having it all... Where were you?" },
       { "id": 2, "character": "George", "text": "I went to the, the beach." },
-      { "id": 3, "character": "George", "text": "It's not working, Jerry. It's just not working." },
-      { "id": 4, "character": "Jerry", "text": "What is it that isn't working?" },
-      { "id": 5, "character": "George", "text": "Why did it all turn out like this for me? I had so much promise. I was personable, I was bright. Oh, maybe not academically speaking, but ... I was perceptive. I always know when someone's uncomfortable at a party. It became very clear to me sitting out there today, that every decision I've ever made, in my entire life, has been wrong. My life is the opposite of everything I want it to be. Every instinct I have, in every of life, be it something to wear, something to eat ... It's all been wrong." },
-      { "id": 6, "character": "Waitress", "text": "Tuna on toast, coleslaw, cup of coffee." },
-      { "id": 7, "character": "George", "text": "Yeah. No, no, no, wait a minute, I always have tuna on toast. Nothing's ever worked out for me with tuna on toast. I want the complete opposite of on toast. Chicken salad, on rye, untoasted ... and a cup of tea." },
-      { "id": 8, "character": "Elaine", "text": "Well, there's no telling what can happen from this." },
-      { "id": 9, "character": "Jerry", "text": "You know chicken salad is not the opposite of tuna, salmon is the opposite of tuna, 'cos salmon swim against the current, and the tuna swim with it." },
-      { "id": 10, "character": "George",  "text": "Good for the tuna.(Sarcasticly)" },
-      { "id": 11, "character": "Victoria", "text": "Oh, yes I was, you just ordered the same exact lunch as me." },
-      { "id": 12, "character": "George", "text": "My name is George. I'm unemployed and I live with my parents." }
+      { "id": 3, "character": "Jerry", "text": "Ahh the beach!" },
+      { "id": 4, "character": "George", "text": "It's not working, Jerry. It's just not working." },
+      { "id": 5, "character": "Jerry", "text": "What is it that isn't working?" },
+      { "id": 6, "character": "George", "text": "Why did it all turn out like this for me? I had so much promise. I was personable, I was bright. Oh, maybe not academically speaking, but ... I was perceptive. I always know when someone's uncomfortable at a party. It became very clear to me sitting out there today, that every decision I've ever made, in my entire life, has been wrong. My life is the opposite of everything I want it to be. Every instinct I have, in every of life, be it something to wear, something to eat ... It's all been wrong." },
+      { "id": 7, "character": "Narrator", "text": "(The waitress walks up to the table.)" },
+      { "id": 8, "character": "Waitress", "text": "Tuna on toast, coleslaw, cup of coffee." },
+      { "id": 9, "character": "George", "text": "Yeah. No, no, no, wait a minute, I always have tuna on toast. Nothing's ever worked out for me with tuna on toast. I want the complete opposite of on toast. Chicken salad, on rye, untoasted ... and a cup of tea." },
+      { "id": 10, "character": "Elaine", "text": "Well, there's no telling what can happen from this." },
+      { "id": 11, "character": "Jerry", "text": "You know chicken salad is not the opposite of tuna, salmon is the opposite of tuna, 'cos salmon swim against the current, and the tuna swim with it." },
+      { "id": 12, "character": "George",  "text": "Good for the tuna." },
+      { "id": 13, "character": "Narrator", "text": "(A woman from across the diner looks over at George)" },
+      { "id": 14, "character": "Elaine", "text": "Uh George, you know that woman over there just looked at you." },
+      { "id": 15, "character": "George",  "text": "That's great, what am I suppose to say?)" },
+      { "id": 16, "character": "Elaine", "text": "Go talk to her." },
+      { "id": 17, "character": "George",  "text": "Elaine, bald men with no money and no job, who live with their parents, don't approach strange women." },
+      { "id": 18, "character": "Jerry", "text": "Well now's your chance to try the opposite, instead of tuna salad and being intimidated by women, chicken salade and going right up to her." },
+      { "id": 19, "character": "George",  "text": "You're right. I will do the opposite. I use to sit here and do nothing and regret it for the rest of the day. But now I'll do the opposite, and I will do something." },
+      { "id": 20, "character": "Narrator", "text": "(George walks over to the woman sitting across the diner)" },
+      { "id": 21, "character": "George", "text": "Excuse me, I couldn't help but notice that you were looking in my direction." }
+      { "id": 22, "character": "Victoria", "text": "Oh, yeah I was, you just ordered the same exact lunch as me." },
+      { "id": 23, "character": "George", "text": "My name is George. I'm unemployed and I live with my parents." }
+      { "id": 24, "character": "Victoria", "text": "I'm Victoria, Hi." },
       ]
     }
   ]
