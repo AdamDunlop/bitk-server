@@ -1,0 +1,36 @@
+{
+  "type": "cartoons",
+  "scripts": [
+    {
+      "name": "Family Guy",
+      "title": "Wacky Wavey",
+      "introAudio": "family_guy.mp3",
+      "characters": ["Al Harrington"],
+      "lines": [
+        {
+          "id": 1,
+          "character": "Al Harrington",
+          "text": " Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Hi, I’m Al Harrington, President and CEO of Al Harrington’s Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Thanks to a shipping error, I am now currently overstocked on Wacky Waving Inflatable Arm Flailing Tube Men, and I am passing the savings on to you. Attract customers to your business. Make a splash at your next presentation. Keep grandma company. Protect your crops. Confuse your neighbors. African American? Hail a cab. Testify in church. Or just raise the roof. Whatever your Wacky Waving Inflatable Arm Flailing Tube Man needs are. So come on down to Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Route 2 in Weekapaug."
+        }
+      ]
+    },
+    {
+      "name": "Simpsons",
+      "title": "Steamed Hams",
+      "introAudio": "the_simpsons.mp3",
+      "characters": ["Skinner", "Chalmers", "Narrator"],
+      "lines": [
+        { "id": 1, "character": "Narrator", "text": "[Chalmers rings Skinner's doorbell while at the exterior. On the other hand at the interior Skinner opens the door.]", "audio": "vintage-doorbell.mp3" },       
+        { "id": 2, "character": "Chalmers", "text": "Well, Seymour, I made it, despite your directions."},
+        { "id": 3, "character": "Skinner", "text": "Ah, Superintendent Chalmers, welcome! I hope you're prepared for an unforgettable luncheon!"},
+        { "id": 4, "character": "Narrator", "text": "[Chalmers enters. In the dining room, he sits at the table by using a brown chair and places a bottle in an ice bucket, while Skinner runs to the kitchen, only to find his roast is burnt, and gasps in horror.]"},       
+        { "id": 5, "character": "Skinner", "text": "Skinner: Oh, ye gods! My roast is ruined!"},       
+        { "id": 7, "character": "Skinner", "text": "But what if... I were to purchase fast food and disguise it as my own cooking? [chuckles] Delightfully devilish, Seymour."},       
+        { "id": 8, "character": "Narrator", "text": "[Skinner begins to move the window up, remove his white apron then climb through the window, but Chalmers enters the kitchen and catches Skinner trying to leave.]"},       
+        { "id": 9, "character": "Chalmers", "text": "Uhhh"},
+        { "id": 10, "character": "Narrator", "text": "[Music plays]", "audio": "skinner_chalmers.mp3"},
+        { "id": 11, "character": "Chalmers", "text": "Seymour!" }
+      ]
+    }
+  ]
+}

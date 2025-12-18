@@ -80,8 +80,8 @@ io.on("connection", (socket) => {
         currentLineIndex: 0,
         currentCharIndex: 0,
         karaokeStep: 1,
-        baseDelay: 70,
-        punctuationDelay: 220,
+        baseDelay: 120,
+        punctuationDelay: 250,
         lineTimer: null,
       };
     }
@@ -240,6 +240,20 @@ io.on("connection", (socket) => {
     }
 
     advanceChar();
+  });
+
+  /* ---------------- STOP SCENE ---------------- */
+
+  socket.on("stopScene", ({ room }) => {
+    const roomInfo = rooms[room];
+    if (!roomInfo) return;
+
+    roomInfo.sceneStarted = false;
+    roomInfo.currentLineIndex = 0;
+    roomInfo.currentCharIndex = 0;
+
+    // Notify everyone
+    io.to(room).emit("sceneStopped");
   });
 
   /* ---------------- DISCONNECT ---------------- */
