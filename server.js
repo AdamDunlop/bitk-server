@@ -14,25 +14,28 @@ const io = new Server(server, {
   cors: { origin: "*" },
 });
 
-/**
- * Rooms structure
- * rooms = {
- *   roomName: {
- *     admin: username,
- *     members: { socketId: username },
- *     script: null | scriptName,
- *     scriptData: null | { characters: [], lines: [] },
- *     characterAssignments: { character: username },
- *     sceneStarted: boolean
- *   }
- * }
- */
+/* ----------------- ROOMS STRUCTURE -----------------
+rooms = {
+  roomName: {
+    admin: username,
+    members: { socketId: username },
+    script: null | scriptName,
+    scriptData: null | { characters: [], lines: [] },
+    characterAssignments: { character: username },
+    sceneStarted: boolean,
+    currentLineIndex: number,
+    currentCharIndex: number,
+    karaokeStep: number,
+    baseDelay: number,
+    punctuationDelay: number,
+    lineTimer: NodeJS.Timeout | null
+  }
+}
+*/
 let rooms = {};
 let roomList = [];
 
-/**
- * ---------------- LOAD SCRIPTS FROM JSON ----------------
- */
+/* ----------------- LOAD SCRIPTS ----------------- */
 function loadAllScripts() {
   const scriptsDir = path.join(__dirname, "scripts");
   if (!fs.existsSync(scriptsDir)) return {};
@@ -44,7 +47,6 @@ function loadAllScripts() {
     const filePath = path.join(scriptsDir, file);
     const rawData = fs.readFileSync(filePath, "utf-8");
     const json = JSON.parse(rawData);
-
     if (!json.scripts) return;
 
     json.scripts.forEach((script) => {
@@ -57,16 +59,7 @@ function loadAllScripts() {
 
 let SCRIPTS = loadAllScripts();
 
-/**
- * Optional: get scripts filtered by type
- */
-function getScriptsByType(type) {
-  return Object.values(SCRIPTS).filter((script) => script.type === type);
-}
-
-/**
- * ---------------- SOCKET CONNECTION ----------------
- */
+/* ----------------- SOCKET CONNECTION ----------------- */
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
 
@@ -74,10 +67,7 @@ io.on("connection", (socket) => {
   socket.on("login", ({ username }) => {
     socket.data.username = username;
     socket.emit("rooms", roomList);
-
-    // send full script objects for client filtering
     socket.emit("scriptListFull", Object.values(SCRIPTS));
-
     console.log("Login:", username);
   });
 
@@ -91,11 +81,37 @@ io.on("connection", (socket) => {
         scriptData: null,
         characterAssignments: {},
         sceneStarted: false,
+        currentLineIndex: 0,
+        currentCharIndex: 0,
+        karaokeStep: 3,
+        baseDelay: 16,
+        punctuationDelay: 220,
+        lineTimer: null,
       };
     }
     roomList = Object.keys(rooms);
     io.emit("rooms", roomList);
     console.log("Room created:", roomName);
+  });
+
+  /* ---------------- DELETE ROOM ---------------- */
+  socket.on("deleteRoom", ({ roomName }) => {
+    if (!roomName) return;
+
+    const roomInfo = rooms[roomName];
+    if (!roomInfo) return;
+
+    if (roomInfo.admin !== socket.data.username) {
+      socket.emit("errorMessage", "Only the room admin can delete this room");
+      return;
+    }
+
+    if (roomInfo.lineTimer) clearTimeout(roomInfo.lineTimer);
+
+    delete rooms[roomName];
+    roomList = Object.keys(rooms);
+    io.emit("rooms", roomList);
+    console.log("Room deleted:", roomName);
   });
 
   /* ---------------- JOIN ROOM ---------------- */
@@ -111,7 +127,6 @@ io.on("connection", (socket) => {
       admin: rooms[room].admin,
     });
 
-    // send full scripts for filtering
     socket.emit("scriptListFull", Object.values(SCRIPTS));
 
     if (rooms[room].script) {
@@ -123,34 +138,7 @@ io.on("connection", (socket) => {
       io.to(room).emit("characterAssignments", rooms[room].characterAssignments);
     }
 
-    socket.to(room).emit("userJoinedRoom", { username: name });
     console.log(`${name} joined room ${room}`);
-  });
-
-  /* ---------------- DELETE ROOM ---------------- */
-  socket.on("deleteRoom", ({ roomName }) => {
-    delete rooms[roomName];
-    roomList = Object.keys(rooms);
-    io.emit("rooms", roomList);
-  });
-
-  /* ---------------- LEAVE ROOM ---------------- */
-  socket.on("leaveRoom", ({ room }) => {
-    if (!rooms[room]) return;
-    const username = rooms[room].members[socket.id];
-    delete rooms[room].members[socket.id];
-    socket.leave(room);
-
-    for (const character in rooms[room].characterAssignments) {
-      if (rooms[room].characterAssignments[character] === username) {
-        delete rooms[room].characterAssignments[character];
-      }
-    }
-
-    io.to(room).emit("roomUsers", Object.values(rooms[room].members));
-    io.to(room).emit("characterAssignments", rooms[room].characterAssignments);
-
-    if (username) socket.to(room).emit("userLeft", username);
   });
 
   /* ---------------- SELECT SCRIPT ---------------- */
@@ -162,6 +150,8 @@ io.on("connection", (socket) => {
     roomInfo.scriptData = SCRIPTS[scriptName];
     roomInfo.characterAssignments = {};
     roomInfo.sceneStarted = false;
+    roomInfo.currentLineIndex = 0;
+    roomInfo.currentCharIndex = 0;
 
     io.to(room).emit("scriptSelected", {
       scriptName,
@@ -187,7 +177,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  /* ---------------- START SCENE ---------------- */
+  /* ---------------- START SCENE (SERVER DRIVEN KARAOKE) ---------------- */
   socket.on("startScene", ({ room }) => {
     const roomInfo = rooms[room];
     if (!roomInfo || !roomInfo.scriptData) return;
@@ -195,7 +185,6 @@ io.on("connection", (socket) => {
     const allAssigned = roomInfo.scriptData.characters.every(
       (ch) => roomInfo.characterAssignments[ch]
     );
-
     if (!allAssigned) {
       socket.emit("errorMessage", "All characters must be assigned");
       return;
@@ -203,28 +192,57 @@ io.on("connection", (socket) => {
 
     roomInfo.sceneStarted = true;
     roomInfo.currentLineIndex = 0;
+    roomInfo.currentCharIndex = 0;
 
     io.to(room).emit("sceneStarted", {
       scriptData: roomInfo.scriptData,
       characterAssignments: roomInfo.characterAssignments,
       currentLineIndex: roomInfo.currentLineIndex,
+      currentCharIndex: roomInfo.currentCharIndex,
     });
-  });
 
-  /* ---------------- ADVANCE LINE ---------------- */
-  socket.on("advanceLine", ({ room }) => {
-    const roomInfo = rooms[room];
-    if (!roomInfo || !roomInfo.sceneStarted) return;
+    function advanceChar() {
+      const line = roomInfo.scriptData.lines[roomInfo.currentLineIndex];
+      if (!line) return;
 
-    if (roomInfo.currentLineIndex < roomInfo.scriptData.lines.length - 1) {
-      roomInfo.currentLineIndex += 1;
-      io.to(room).emit("currentLineUpdate", {
+      let step = 1;
+      let delay = roomInfo.baseDelay;
+
+      for (
+        let i = 0;
+        i < roomInfo.karaokeStep && roomInfo.currentCharIndex + i < line.text.length;
+        i++
+      ) {
+        const char = line.text[roomInfo.currentCharIndex + i];
+        step = i + 1;
+        if (/[.,!?]/.test(char)) {
+          delay = roomInfo.punctuationDelay;
+          break;
+        }
+      }
+
+      roomInfo.currentCharIndex += step;
+
+      io.to(room).emit("lineProgress", {
         currentLineIndex: roomInfo.currentLineIndex,
+        currentCharIndex: roomInfo.currentCharIndex,
       });
-    } else {
-      // Instead of auto-reset:
-      io.to(room).emit("sceneFinished"); // <- new event
+
+      if (roomInfo.currentCharIndex >= line.text.length) {
+        roomInfo.currentLineIndex++;
+        roomInfo.currentCharIndex = 0;
+
+        if (roomInfo.currentLineIndex >= roomInfo.scriptData.lines.length) {
+          roomInfo.sceneStarted = false;
+          io.to(room).emit("sceneFinished");
+          return;
+        }
+      }
+
+      roomInfo.lineTimer = setTimeout(advanceChar, delay);
     }
+
+    advanceChar();
   });
 
   /* ---------------- DISCONNECT ---------------- */
@@ -234,15 +252,14 @@ io.on("connection", (socket) => {
       if (rooms[room].members[socket.id]) {
         const username = rooms[room].members[socket.id];
         delete rooms[room].members[socket.id];
-
         io.to(room).emit("roomState", Object.values(rooms[room].members));
-        socket.to(room).emit("userLeft", username);
       }
     }
     console.log("Socket disconnected:", socket.id);
   });
 });
 
+/* ---------------- START SERVER ---------------- */
 server.listen(3000, () => {
   console.log("✅ Server running on port 3000");
 });
