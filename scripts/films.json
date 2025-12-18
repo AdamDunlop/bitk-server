@@ -1,0 +1,47 @@
+{
+  "type": "films",
+  "scripts": [
+    {
+      "name": "Dumb and Dumber",
+      "title": "Going to Aspen",
+      "characters": ["Lloyd", "Harry", "Narrator"],
+      "lines": [
+        { "id": 1, "character": "Narrator", "text": "(Lloyd enters the room, slams the door in anger and collaspes on the ground)" },
+        { "id": 2, "character": "Harry", "text": "Where's the booze?" },
+        { "id": 3, "character": "Lloyd", "text": "I got robbed by a sweet old lady on a motorized cart. I didn't even see it coming." },
+        { "id": 4, "character": "Harry", "text": "(Groans) oh no ... no " },
+        { "id": 5, "character": "Lloyd", "text": "Oh, come on Harry. Cheer up." },
+        { "id": 6, "character": "Harry", "text": "No, it gets worse Lloyd, my paraquee petee..." },
+        { "id": 7, "character": "Lloyd", "text": "Yea?" },
+        { "id": 8, "character": "Harry", "text": "He's dead." },
+        { "id": 9, "character": "Lloyd", "text": "awww, oh man I'm sorry Harry, how did he die?" },
+        { "id": 10, "character": "Harry", "text": "His head fell off." },
+        { "id": 11, "character": "Lloyd", "text": "His head fell off?" },
+        { "id": 12, "character": "Harry", "text": "Yeah he was pretty old." },
+        { "id": 13, "character": "Narrator", "text": "(Lloyd walks over to petey's cage.)" },
+        { "id": 14, "character": "Lloyd", "text": "awww, that's it. I've had it with this dump. We've got no food, we got no jobs. Are pets heads are falling off!" },
+        { "id": 15, "character": "Harry", "text": "Okay, just calm down." },
+        { "id": 16, "character": "Lloyd", "text": "What the hell are we doing here Harry? We've got to get out of this town" }
+        { "id": 17, "character": "Harry", "text": "Oh yeah and go where?" },
+        { "id": 18, "character": "Lloyd", "text": "I'll tell you where, a place where the beer flows like wine, where the women instinctively flock like the salmon of capostrano." }
+        { "id": 19, "character": "Lloyd", "text": "I'm talking about a little place called, Aspen" }
+        { "id": 20, "character": "Harry", "text": "I don't know LLoyd the French are assholes... wait a minute. " }
+        { "id": 21, "character": "Narrator", "text": "(Harry Stand up)" },
+        { "id": 22, "character": "Harry", "text": "Wait a minute, i know what you're up to mister." }
+        { "id": 23, "character": "Harry", "text": "Yeah, you just want to find that girl who lost her briefcase, and you need me to drive you there. Right? am I right?." }
+        { "id": 24, "character": "Lloyd", "text": "Yeah? So? YEAH? SO!!" }
+        { "id": 25, "character": "Lloyd", "text": "So I want to go someplace where we know somebody can plug us into the social pipeline." }
+        { "id": 26, "character": "Harry", "text": "No, no, no, no, NO! LLoyd. I say we stay here, we hunt for jobs and keep saving our money for the worm store." }
+        { "id": 27, "character": "Harry", "text": "Now I dont' know about you but I'm getting sick and tied of running for creditors." }
+        { "id": 28, "character": "Lloyd", "text": "You know what I'm sick of Harry? I'm sick and tires of having to eek my way through life. I'm sick and tied of being a nobody. And most of all I'm sick of having nobody." }
+        { "id": 29, "character": "Harry", "text": "Alright LLoyd, Aspen it is" }
+        { "id": 30, "character": "Narrator", "text": "(Harry opens his arms inviting Lloyd in for a hug)" },
+        { "id": 31, "character": "LLoyd", "text": "You better not be foolin'" }
+        { "id": 32, "character": "Narrator", "text": "(Harry and Lloyd embrace eachother and hug it out. Lloyd starts crying.)" },
+
+
+
+      ] 
+    }
+  ]
+}
