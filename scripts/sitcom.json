@@ -27,9 +27,9 @@
       { "id": 18, "character": "Jerry", "text": "Well now's your chance to try the opposite, instead of tuna salad and being intimidated by women, chicken salade and going right up to her." },
       { "id": 19, "character": "George",  "text": "You're right. I will do the opposite. I use to sit here and do nothing and regret it for the rest of the day. But now I'll do the opposite, and I will do something." },
       { "id": 20, "character": "Narrator", "text": "(George walks over to the woman sitting across the diner)" },
-      { "id": 21, "character": "George", "text": "Excuse me, I couldn't help but notice that you were looking in my direction." }
+      { "id": 21, "character": "George", "text": "Excuse me, I couldn't help but notice that you were looking in my direction." },
       { "id": 22, "character": "Victoria", "text": "Oh, yeah I was, you just ordered the same exact lunch as me." },
-      { "id": 23, "character": "George", "text": "My name is George. I'm unemployed and I live with my parents." }
+      { "id": 23, "character": "George", "text": "My name is George. I'm unemployed and I live with my parents." },
       { "id": 24, "character": "Victoria", "text": "I'm Victoria, Hi." },
       ]
     }
