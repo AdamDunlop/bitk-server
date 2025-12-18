@@ -198,6 +198,7 @@ io.on("connection", (socket) => {
     });
 
     function advanceChar() {
+      if (!roomInfo.sceneStarted) return; // stop early if scene was stopped
       const line = roomInfo.scriptData.lines[roomInfo.currentLineIndex];
       if (!line) return;
 
@@ -247,6 +248,12 @@ io.on("connection", (socket) => {
   socket.on("stopScene", ({ room }) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
+
+    // Stop any running timers
+    if (roomInfo.lineTimer) {
+      clearTimeout(roomInfo.lineTimer);
+      roomInfo.lineTimer = null;
+    }
 
     roomInfo.sceneStarted = false;
     roomInfo.currentLineIndex = 0;
