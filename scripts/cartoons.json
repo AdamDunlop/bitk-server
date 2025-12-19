@@ -53,6 +53,14 @@
         { "id": 31, "character": "Skinner", "text": "[chuckles] Oh, no! Patented Skinner Burgers! Old family recipe." }
 
       ]
+    },
+    {
+      "name": "Rick and Morty",
+      "title": "Two Brothers",
+      "characters": ["Narrator"],
+      "lines": [ 
+        {"id": 1, "character": "Narrator", "text": " It's in theaters now! Coming this summer: Two brothers. In a van. And then a meteor hit. And they ran as fast as they could, from giant cat monsters. And then a giant tornado came. And that's when things got knocked into 12th gear. A Mexican armada shows up. With weapons made from Two--tomatoes. And you better bet your bottom dollar that these two brothers know how to handle business. In: Alien Invasion Tomato Monster Mexican Armada Brothers, Who Are Just Regular Brothers, Running In a Van From an Asteroid and All Sorts of Things THE MOVIE! Hold on, there's more! Old women are coming, and they're also in the movie, and they're gonna come, and cross-attack these two brothers. But let's get back to the brothers, because they're-- they have a strong bond. You don't want to know about it here, but I'll tell you one thing: The moon, it comes crashing into Earth. And what do you do then? It's two brothers and--and th-they're - It's called Two Brothers. Two brothers! It's just called Two Brothers." }
+      ]
     }
   ]
 }
