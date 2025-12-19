@@ -79,9 +79,9 @@ io.on("connection", (socket) => {
         sceneStarted: false,
         currentLineIndex: 0,
         currentCharIndex: 0,
-        karaokeStep: 1,
-        baseDelay: 120,
-        punctuationDelay: 250,
+        karaokeStep: 2,
+        baseDelay: 90,
+        punctuationDelay: 300,
         lineTimer: null,
       };
     }
@@ -242,6 +242,7 @@ io.on("connection", (socket) => {
 
     advanceChar();
   });
+
 
   /* ---------------- STOP SCENE ---------------- */
 

@@ -10,7 +10,7 @@
         {
           "id": 1,
           "character": "Al Harrington",
-          "text": " Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Hi, I’m Al Harrington, President and CEO of Al Harrington’s Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Thanks to a shipping error, I am now currently overstocked on Wacky Waving Inflatable Arm Flailing Tube Men, and I am passing the savings on to you. Attract customers to your business. Make a splash at your next presentation. Keep grandma company. Protect your crops. Confuse your neighbors. African American? Hail a cab. Testify in church. Or just raise the roof. Whatever your Wacky Waving Inflatable Arm Flailing Tube Man needs are. So come on down to Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Route 2 in Weekapaug."
+          "text": "Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Hi, I’m Al Harrington, President and CEO of Al Harrington’s Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Thanks to a shipping error, I am now currently overstocked on Wacky Waving Inflatable Arm Flailing Tube Men, and I am passing the savings on to you. Attract customers to your business. Make a splash at your next presentation. Keep grandma company. Protect your crops. Confuse your neighbors. African American? Hail a cab. Testify in church. Or just raise the roof. Whatever your Wacky Waving Inflatable Arm Flailing Tube Man needs are. So come on down to Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Route 2 in Weekapaug."
         }
       ]
     },
@@ -25,11 +25,33 @@
         { "id": 3, "character": "Skinner", "text": "Ah, Superintendent Chalmers, welcome! I hope you're prepared for an unforgettable luncheon!"},
         { "id": 4, "character": "Narrator", "text": "[Chalmers enters. In the dining room, he sits at the table by using a brown chair and places a bottle in an ice bucket, while Skinner runs to the kitchen, only to find his roast is burnt, and gasps in horror.]"},       
         { "id": 5, "character": "Skinner", "text": "Skinner: Oh, ye gods! My roast is ruined!"},       
+        { "id": 6, "character": "Narrator", "text": "[Skinner peers out of the window and sees a Krusty Burger across the street.]"},       
         { "id": 7, "character": "Skinner", "text": "But what if... I were to purchase fast food and disguise it as my own cooking? [chuckles] Delightfully devilish, Seymour."},       
-        { "id": 8, "character": "Narrator", "text": "[Skinner begins to move the window up, remove his white apron then climb through the window, but Chalmers enters the kitchen and catches Skinner trying to leave.]"},       
-        { "id": 9, "character": "Chalmers", "text": "Uhhh"},
-        { "id": 10, "character": "Narrator", "text": "[Music plays]", "audio": "skinner_chalmers.mp3"},
-        { "id": 11, "character": "Chalmers", "text": "Seymour!" }
+        { "id": 8, "character": "Narrator", "text": "[Skinner removes his apron, opens the window and begins to climb through, but Chalmers enters the kitchen and catches Skinner trying to leave.]"},       
+        { "id": 9, "character": "Chalmers", "text": "Ehhh"},
+        { "id": 10, "character": "Narrator", "text": "[ ... Skinner, with his crazy explanations... The superintendent's gonna need his medication .... When he hears Skinner's lame exaggerations, There'll be trouble in town - tonight!.... ]", "audio": "skinner_chalmers.mp3"}, 
+        { "id": 11, "character": "Chalmers", "text": "SEEEEEEEEEYMOOUUURRR!......" },
+        { "id": 12, "character": "Skinner", "text": "Superintendent Chalmers, I was just uhhh stretching my calfs on the windo sill. Isometric excersize, care to join me?" },
+        { "id": 13, "character": "Chalmers", "text": "Why is there smoke coming out of your oven Seymour?" },
+        { "id": 14, "character": "Skinner", "text": "Oh, that isn't smoke, that's steam from the steamed clams we're having. Mmm steamed clams!" },
+        { "id": 15, "character": "Narrator", "text": "[Chalmers exits the room to the kitchen."},
+        { "id": 16, "character": "Skinner", "text": "Phew!" },
+        { "id": 17, "character": "Narrator", "text": "[We see Skinner scampering off to Krusty Burger.]"},
+        { "id": 18, "character": "Narrator", "text": "[Skinner enters the kitchen with a trey of Krusty Burgers.]"},
+        { "id": 19, "character": "Skinner", "text": "Superintendent, I hope you're ready for mouth watering hamburgers!" },
+        { "id": 20, "character": "Chalmers", "text": "I thought you said we we're having steamed clams." },
+        { "id": 21, "character": "Skinner", "text": "Oh no, I said 'steamed hams'! , that's what I call hamburgers." },
+        { "id": 22, "character": "Chalmers", "text": "You call hamburgers 'steamed hams'?" },
+        { "id": 23, "character": "Skinner", "text": "Yes! It's a regional dialect." },
+        { "id": 24, "character": "Chalmers", "text": "Uh-huh. Eh, what region?" },
+        { "id": 25, "character": "Skinner", "text": "Upstate New York?" },
+        { "id": 26, "character": "Chalmers", "text": "Really? Well, I'm from Utica and I've never heard anyone use the phrase 'steamed hams'." },
+        { "id": 27, "character": "Skinner", "text": "Oh, not in Utica, no. It's an Albany expression." },
+        { "id": 28, "character": "Chalmers", "text": "I see." },
+        { "id": 29, "character": "Narrator", "text": "[Chalmers takes a bite out of a burger and chews it a little, while Skinner sips his drink.]"},
+        { "id": 30, "character": "Chalmers", "text": "You know, these hamburgers are quite similar to the ones they have at Krusty Burger." },
+        { "id": 31, "character": "Skinner", "text": "[chuckles] Oh, no! Patented Skinner Burgers! Old family recipe." }
+
       ]
     }
   ]
