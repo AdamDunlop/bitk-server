@@ -7,6 +7,7 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
+
 app.use(cors());
 app.use("/audio", express.static(path.join(__dirname, "assets/audio")));
 app.use("/images", express.static("assets/images"));
@@ -28,6 +29,16 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*" },
 });
+
+const scriptsDir = path.join(__dirname, "scripts");
+
+const allScripts = fs.readdirSync(scriptsDir)
+  .filter(file => file.endsWith(".json"))
+  .map(file => {
+    const raw = fs.readFileSync(path.join(scriptsDir, file), "utf-8");
+    return JSON.parse(raw);
+  })
+  .flatMap(scriptGroup => scriptGroup.scripts);
 
 /* ----------------- GLOBAL STATE ----------------- */
 let rooms = {};
@@ -79,7 +90,6 @@ io.on("connection", (socket) => {
     socket.emit("rooms", roomList);
     socket.emit("scriptListFull", Object.values(SCRIPTS));
   });
-
 
   /* ---------------- CREATE ROOM ---------------- */
   socket.on("createRoom", ({ roomName }) => {
@@ -153,19 +163,28 @@ io.on("connection", (socket) => {
 
   /* ---------------- SELECT SCRIPT ---------------- */
   socket.on("selectScript", ({ room, scriptName }) => {
-    const roomInfo = rooms[room];
-    if (!roomInfo || !SCRIPTS[scriptName]) return;
+  const roomInfo = rooms[room];
+  if (!roomInfo) return;
+
+  const scriptObj = allScripts.find((s) => s.name === scriptName);
+    if (!scriptObj) {
+      console.log("Script not found:", scriptName);
+      return;
+    }
 
     roomInfo.script = scriptName;
-    roomInfo.scriptData = SCRIPTS[scriptName];
-    roomInfo.characterAssignments = {};
-    roomInfo.sceneStarted = false;
+    roomInfo.scriptData = scriptObj;
+
+    roomInfo.karaokeStep = scriptObj.karaokeStep ?? 2;
+    roomInfo.baseDelay = scriptObj.baseDelay ?? 90;
+    roomInfo.punctuationDelay = scriptObj.punctuationDelay ?? 300;
+
     roomInfo.currentLineIndex = 0;
     roomInfo.currentCharIndex = 0;
 
     io.to(room).emit("scriptSelected", {
       scriptName,
-      scriptData: roomInfo.scriptData,
+      scriptData: scriptObj,
       admin: roomInfo.admin,
     });
   });
