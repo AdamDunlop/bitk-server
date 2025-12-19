@@ -9,6 +9,20 @@ const path = require("path");
 const app = express();
 app.use(cors());
 app.use("/audio", express.static(path.join(__dirname, "assets/audio")));
+app.use("/images", express.static("assets/images"));
+app.use(
+  "/video",
+  express.static(path.join(__dirname, "assets/video"), {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".mp4")) {
+        res.setHeader("Content-Type", "video/mp4");
+      }
+    },
+  })
+);
+
+const PORT = 3001; // or any free port
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 const server = http.createServer(app);
 const io = new Server(server, {

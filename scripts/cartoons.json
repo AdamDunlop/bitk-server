@@ -4,6 +4,7 @@
     {
       "name": "Family Guy",
       "title": "Wacky Wavey",
+      "videoUri": "wacky-waving.mp4",
       "introAudio": "family_guy.mp3",
       "characters": ["Al Harrington"],
       "lines": [
