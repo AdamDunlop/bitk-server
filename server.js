@@ -230,6 +230,8 @@ io.on("connection", (socket) => {
       currentCharIndex: roomInfo.currentCharIndex,
     });
 
+
+
     function advanceChar() {
       if (!roomInfo.sceneStarted) return; // stop early if scene was stopped
       const line = roomInfo.scriptData.lines[roomInfo.currentLineIndex];
@@ -276,6 +278,15 @@ io.on("connection", (socket) => {
     advanceChar();
   });
 
+  /* ---------------- RESET ---------------- */
+  socket.on("resetAssignments", ({ room }) => {
+    const roomInfo = rooms[room];
+    if (!roomInfo) return;
+
+    roomInfo.characterAssignments = {};
+    io.to(room).emit("characterAssignments", {});
+  });
+
 
   /* ---------------- STOP SCENE ---------------- */
 
@@ -283,17 +294,32 @@ io.on("connection", (socket) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
 
-    // Stop any running timers
-    if (roomInfo.lineTimer) {
-      clearTimeout(roomInfo.lineTimer);
-      roomInfo.lineTimer = null;
-    }
+    if (roomInfo.lineTimer) clearTimeout(roomInfo.lineTimer);
+    roomInfo.lineTimer = null;
 
     roomInfo.sceneStarted = false;
     roomInfo.currentLineIndex = 0;
     roomInfo.currentCharIndex = 0;
 
-    // Notify everyone
+    io.to(room).emit("sceneStopped");
+  });
+
+  // END SCENE (clear assignments)
+  socket.on("endScene", ({ room }) => {
+    const roomInfo = rooms[room];
+    if (!roomInfo) return;
+
+    if (roomInfo.lineTimer) clearTimeout(roomInfo.lineTimer);
+    roomInfo.lineTimer = null;
+
+    roomInfo.sceneStarted = false;
+    roomInfo.currentLineIndex = 0;
+    roomInfo.currentCharIndex = 0;
+
+    // Unassign all characters
+    roomInfo.characterAssignments = {};
+    io.to(room).emit("characterAssignments", {});
+
     io.to(room).emit("sceneStopped");
   });
 

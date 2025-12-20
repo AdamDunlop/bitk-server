@@ -22,25 +22,24 @@
         { "id": 14, "character": "Lloyd", "text": "Awww, that's it. I've had it with this dump. We've got no food, we got no jobs. Are pets heads are falling off!" },
         { "id": 15, "character": "Harry", "text": "Okay, just calm down." },
         { "id": 16, "character": "Lloyd", "text": "What the hell are we doing here Harry? We've got to get out of this town." },
-        { "id": 17, "character": "Harry", "text": "Oh yeah and go where?" },
-        { "id": 18, "character": "Lloyd", "text": "I'll tell you where, a place where the beer flows like wine, where the women instinctively flock like the salmon of Capistrano." },
+        { "id": 17, "character": "Harry", "text": "Oh yeah? and go where?" },
+        { "id": 18, "character": "Lloyd", "text": "I'll tell you where... Some place warm. A place where the beer flows like wine. Where beautiful women instinctively flock like the salmon of Capistrano..." },
         { "id": 19, "character": "Lloyd", "text": "I'm talking about a little place called, Aspen." },
         { "id": 20, "character": "Harry", "text": "I don't know LLoyd the French are assholes... wait a minute. " },
         { "id": 21, "character": "Narrator", "text": "(Harry Stand up)" },
         { "id": 22, "character": "Harry", "text": "Wait a minute, I know what you're up to mister." },
-        { "id": 23, "character": "Harry", "text": "Yeah, you just want to find that girl who lost her briefcase, and you need me to drive you there. Right? Am I right?." },
-        { "id": 24, "character": "Lloyd", "text": "Yeah? So? YEAH? SO!!" },
-        { "id": 25, "character": "Lloyd", "text": "So I want to go someplace where we know somebody who can plug us into the social pipeline." },
-        { "id": 26, "character": "Harry", "text": "No, no, no, no, NO! LLoyd. I say we stay here, we hunt for jobs and keep saving our money for the worm store." },
-        { "id": 27, "character": "Harry", "text": "Now I dont' know about you but I'm getting sick and tied of running for creditors." },
-        { "id": 28, "character": "Lloyd", "text": "You know what I'm sick of Harry? I'm sick and tires of having to eek my way through life. I'm sick and tied of being a nobody. And most of all I'm sick of having nobody." },
-        { "id": 29, "character": "Harry", "text": "Alright LLoyd, Aspen it is" },
-        { "id": 30, "character": "Narrator", "text": "(Harry opens his arms inviting Lloyd in for a hug)" },
-        { "id": 31, "character": "LLoyd", "text": "You better not be foolin'" },
-        { "id": 32, "character": "Narrator", "text": "(Harry and Lloyd embrace eachother and hug. Lloyd starts crying.)" }
-
-
-
+        { "id": 23, "character": "Harry", "text": "Yeah, you just want to find that girl who lost her briefcase, and you need me to drive you there. Right? Am I right? " },
+        { "id": 24, "character": "Lloyd", "text": "Yeah? So? " },
+        { "id": 25, "character": "Harry", "text": "Am I right?" },
+        { "id": 26, "character": "Lloyd", "text": "YEAH? SO? " },
+        { "id": 27, "character": "Lloyd", "text": "So I want to go someplace where we know somebody who can plug us into the social pipeline." },
+        { "id": 28, "character": "Harry", "text": "No, no, no, no, NO! LLoyd. I say we stay here, we hunt for jobs and keep saving our money for the worm store." },
+        { "id": 29, "character": "Harry", "text": "Now I dont' know about you but I'm getting sick and tied of running for creditors." },
+        { "id": 30, "character": "Lloyd", "text": "You know what I'm sick of Harry? I'm sick and tired of having to eek my way through life. I'm sick and tired of being a nobody and most of all I'm sick of having nobody." },
+        { "id": 31, "character": "Harry", "text": "Alright LLoyd, Aspen it is","audio": "the-love-affair.mp3"  },
+        { "id": 32, "character": "Narrator", "text": "(Harry opens his arms inviting Lloyd in for a hug)" },
+        { "id": 33, "character": "LLoyd", "text": "You better not be foolin'" },
+        { "id": 34, "character": "Narrator", "text": "(Harry and Lloyd embrace eachother and hug. Lloyd starts crying while Harry comforts him.)" }
       ] 
     }
   ]

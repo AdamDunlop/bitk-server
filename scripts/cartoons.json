@@ -5,20 +5,20 @@
       "name": "Family Guy",
       "title": "Wacky Wavey",
       "videoUri": "wacky-waving.mp4",
-      "introAudio": "family_guy.mp3",
+      "introAudio": "family-guy.mp3",
       "characters": ["Al Harrington"],
       "lines": [
         {
           "id": 1,
           "character": "Al Harrington",
-          "text": "Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Hi, I’m Al Harrington, President and CEO of Al Harrington’s Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Thanks to a shipping error, I am now currently overstocked on Wacky Waving Inflatable Arm Flailing Tube Men, and I am passing the savings on to you. Attract customers to your business. Make a splash at your next presentation. Keep grandma company. Protect your crops. Confuse your neighbors. African American? Hail a cab. Testify in church. Or just raise the roof. Whatever your Wacky Waving Inflatable Arm Flailing Tube Man needs are. So come on down to Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Route 2 in Weekapaug."
+          "text": "Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Hi, I’m Al Harrington President and CEO of Al Harrington’s Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Thanks to a shipping error I am now currently overstocked on Wacky Waving Inflatable Arm Flailing Tube Men and I am passing the savings on to you!.... Attract customers to your business. Make a splash at your next presentation. Keep grandma company protect your crops confuse your neighbors. African American? Hail a cab. Testify in church or just raise the roof! Whatever your Wacky Waving Inflatable Arm Flailing Tube Man needs are. So come on down to Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Route 2 in Weekapaug."
         }
       ]
     },
     {
       "name": "Simpsons",
       "title": "Steamed Hams",
-      "introAudio": "the_simpsons.mp3",
+      "introAudio": "the-simpsons.mp3",
       "characters": ["Skinner", "Chalmers", "Narrator"],
       "lines": [
         { "id": 1, "character": "Narrator", "text": "[Chalmers rings Skinner's doorbell while at the exterior. On the other hand at the interior Skinner opens the door.]", "audio": "vintage-doorbell.mp3" },       
@@ -30,7 +30,7 @@
         { "id": 7, "character": "Skinner", "text": "But what if... I were to purchase fast food and disguise it as my own cooking? [chuckles] Delightfully devilish, Seymour."},       
         { "id": 8, "character": "Narrator", "text": "[Skinner removes his apron, opens the window and begins to climb through, but Chalmers enters the kitchen and catches Skinner trying to leave.]"},       
         { "id": 9, "character": "Chalmers", "text": "Ehhh"},
-        { "id": 10, "character": "Narrator", "text": "[ ... Skinner, with his crazy explanations... The superintendent's gonna need his medication .... When he hears Skinner's lame exaggerations, There'll be trouble in town - tonight!.... ]", "audio": "skinner_chalmers.mp3"}, 
+        { "id": 10, "character": "Narrator", "text": "[ ... Skinner, with his crazy explanations... The superintendent's gonna need his medication .... When he hears Skinner's lame exaggerations, There'll be trouble in town - tonight!.... ]", "audio": "skinner-chalmers.mp3"}, 
         { "id": 11, "character": "Chalmers", "text": "SEEEEEEEEEYMOOUUURRR!......" },
         { "id": 12, "character": "Skinner", "text": "Superintendent Chalmers, I was just uhhh stretching my calfs on the windo sill. Isometric excersize, care to join me?" },
         { "id": 13, "character": "Chalmers", "text": "Why is there smoke coming out of your oven Seymour?" },
