@@ -4,8 +4,9 @@
     {
       "id": "s-the-opposite",
       "name": "Seinfeld",
-      "introAudio": "seinfeld.mp3",
+      "copyright": "© 1989–1998 Castle Rock Entertainment. All rights reserved.",
       "title": "The Opposite",
+      "introAudio": "seinfeld.mp3",
       "characters": ["Jerry", "George", "Elaine", "Waitress", "Victoria", "Narrator"],
       "lines": [
       { "id": 1, "character": "Jerry", "text": "Speaking of having it all... Where were you?" },

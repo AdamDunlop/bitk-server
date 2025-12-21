@@ -4,6 +4,7 @@
     {
       "id": "fm-wacky-waveing",
       "name": "Family Guy",
+      "copyright": "© 1999–present Fox Broadcasting Company. All rights reserved.",
       "title": "Wacky Waving",
       "videoUri": "wacky-waving.mp4",
       "introAudio": "family-guy.mp3",
@@ -20,6 +21,7 @@
     {
       "id": "ts-steamed-hams",
       "name": "The Simpsons",
+      "copyright": "© 1989–present Twentieth Century Fox Film Corporation. All rights reserved.",
       "title": "Steamed Hams",
       "introAudio": "the-simpsons.mp3",
       "characters": ["Skinner", "Chalmers", "Narrator"],
@@ -78,6 +80,7 @@
     {
       "id": "ram-ants-in-my-eyes",
       "name": "Rick and Morty2",
+      "copyright":"© Adult Swim / Cartoon Network. All rights reserved.",
       "title": "Ants In My Eyes",
       "imageUri": "ants-in-my-eyes.png",
       "videoUri": "ants-in-my-eyes.mp4",
