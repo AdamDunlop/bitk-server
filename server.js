@@ -150,24 +150,24 @@ io.on("connection", (socket) => {
 
     // Sync current script & assignments to **new user only**
     if (rooms[room].script && rooms[room].scriptData) {
-      socket.emit("scriptSelected", {
+      socket.emit("scriptSelected", { 
         scriptName: rooms[room].script,
         scriptData: rooms[room].scriptData,
-        admin: rooms[room].admin,
+        admin: rooms[room].admin
       });
-
-      socket.emit("characterAssignments", rooms[room].characterAssignments);
-
-      // If scene is running, sync current line progress
-      if (rooms[room].sceneStarted) {
-        socket.emit("sceneStarted", {
-          scriptData: rooms[room].scriptData,
-          characterAssignments: rooms[room].characterAssignments,
-          currentLineIndex: rooms[room].currentLineIndex,
-          currentCharIndex: rooms[room].currentCharIndex,
-        });
-      }
     }
+    socket.emit("characterAssignments", rooms[room].characterAssignments);
+
+    // If scene is running, sync current line progress
+    if (rooms[room].sceneStarted) {
+      socket.emit("sceneStarted", {
+        scriptData: rooms[room].scriptData,
+        characterAssignments: rooms[room].characterAssignments,
+        currentLineIndex: rooms[room].currentLineIndex,
+        currentCharIndex: rooms[room].currentCharIndex,
+      });
+    }
+
 
     console.log(`${name} joined room ${room}`);
   });

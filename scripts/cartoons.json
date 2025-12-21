@@ -8,6 +8,7 @@
       "videoUri": "wacky-waving.mp4",
       "introAudio": "family-guy.mp3",
       "characters": ["Al Harrington"],
+
       "lines": [
         {
           "id": 1,
@@ -59,6 +60,7 @@
     {
       "id": "ram-two-brothers",
       "name": "Rick and Morty",
+      "copyright":"© Adult Swim / Cartoon Network. All rights reserved.",
       "title": "Two Brothers",
       "videoUri": "two-brothers.mp4",
       "karaokeStep": 1,
@@ -89,6 +91,37 @@
           "character": "Ants-In-My-Eyes Johnson",
           "text": "I'm Ants-In-My-Eyes Johnson, Here at Ants-in-My-Eyes Johnson's Electronics. I mean, there's so many ants in my eyes! And there's so many TVs, microwaves, radios I think, I can't-- I'm not 100% sure what we have here in stock, because I can't see anything. Our prices, I hope, aren't too low! Check out this refrigerator! Only $200! What about this microwave? Only $100! That's fair! I'm Ants-in-My-Eyes Johnson! Everything's black, I can't see a thing! And also I can't feel anything either-- did I mention that? But that's not as catchy as having ants in your eyes. So that always goes, you know, off by the wayside. I can't feel. It's a very rare disease. All my sens-- All my nerves, they don't allow for the sensation of touch. So I never know what's going on. Am I standing? Sitting? I don't know."
         }
+      ]
+    },
+    {
+      "id": "ram-real-fake-doors",
+      "name": "Rick and Morty",
+      "copyright":"© Adult Swim / Cartoon Network. All rights reserved.",
+      "title": "Real Fake Doors!",
+      "videoUri": "real-fake-doors.mp4",
+      "karaokeStep": 2,
+      "baseDelay": 95,
+      "punctuationDelay": 260,
+      "characters": ["Fake Doors Salesman", "Rick", "Morty", "Narrator"],
+      "lines": [
+        {"id": 1, "character": "Fake Doors Salesman", "text": "Hey, are you tired of real doors, cluttering up your house, where you open 'em, and they actually go somewhere? And you go in another room? Get on down to Real Fake Doors! That's us. Fill a whole room up with 'em. See? Watch, check this out! Won't open. Won't open. Not this one, not this one. None of 'em open! FakeDoors (dot) com is our website, so check it out for a lot of really great deals on fake doooooooors!." },
+        {"id": 2, "character": "Narrator", "text": "[The Salesman walks off the set, still looking at the camera. He gets into he car and starts driving]" },
+        {"id": 3, "character": "Morty", "text": "Hey, wait a minute, Rick. Wh-- I thought this was a commercial. Wh-what's going on? I mean-- "},
+        {"id": 4, "character": "Rick", "text": "Relax, Morty. Don't-don't worry about it. Let's just just see where this goes."},
+        {"id": 5, "character": "Narrator", "text": "[The Salesman is now stuck in traffic.]" },
+        {"id": 6, "character": "Fake Doors Salesman", "text": "Step on it, we all got places to be!  Son of a bitch!  "},
+        {"id": 7, "character": "Narrator", "text": "[The Salesman pulls into a driveway]" },
+        {"id": 8, "character": "Morty", "text": "See, that must be where he lives. OK..."},
+        {"id": 7, "character": "Narrator", "text": "[The Salesman starts making himself a peanut butter and jelly sandwich]" },
+        {"id": 9, "character": "Rick", "text": "Huh. Making himself a sandwich now... "},
+        {"id": 10, "character": "Fake Doors Salesman", "text": "Hey everybody! So this is my house, I just made a sandwich, peanut butter and jelly, still here, still selling fake doors!"},
+        {"id": 11, "character": "Morty", "text": "What?"},
+        {"id": 12, "character": "Rick", "text": "Oh my god, it's still the commerical!"},
+        {"id": 13, "character": "Fake Doors Salesman", "text": " We have fake doors like you wouldn't believe! What are you worried about? Come get fake doors. Call us up, and order some fake doors today. Don't even hesitate, Don't even worry and don't even... " },
+        {"id": 14, "character": "Rick", "text": "I'm bored, change it."},
+        {"id": 15, "character": "Morty", "text": "No wait Rick, Hold on hold on... "},
+        {"id": 16, "character": "Fake Doors Salesman", "text": "give it a second thought. That's our slogan. See it on the bottom of the screen, below our name. Here's another slogan, right below that one. What are you worried about? Come get fake doors! Get in here quick, get out quicker, with an arm of fake doors in you arms. Don't even worry about it!" },
+        {"id": 15, "character": "Morty", "text": "Okay you can change it."}
       ]
     }
   ]
