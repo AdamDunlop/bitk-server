@@ -139,55 +139,69 @@ io.on("connection", (socket) => {
     rooms[room].members[socket.id] = name;
     socket.join(room);
 
+    // Send current room members to everyone
     io.to(room).emit("roomState", {
       users: Object.values(rooms[room].members),
       admin: rooms[room].admin,
     });
 
+    // Send full script list
     socket.emit("scriptListFull", Object.values(SCRIPTS));
 
-    if (rooms[room].script) {
+    // Sync current script & assignments to **new user only**
+    if (rooms[room].script && rooms[room].scriptData) {
       socket.emit("scriptSelected", {
         scriptName: rooms[room].script,
         scriptData: rooms[room].scriptData,
         admin: rooms[room].admin,
       });
-      io.to(room).emit(
-        "characterAssignments",
-        rooms[room].characterAssignments
-      );
+
+      socket.emit("characterAssignments", rooms[room].characterAssignments);
+
+      // If scene is running, sync current line progress
+      if (rooms[room].sceneStarted) {
+        socket.emit("sceneStarted", {
+          scriptData: rooms[room].scriptData,
+          characterAssignments: rooms[room].characterAssignments,
+          currentLineIndex: rooms[room].currentLineIndex,
+          currentCharIndex: rooms[room].currentCharIndex,
+        });
+      }
     }
 
     console.log(`${name} joined room ${room}`);
   });
 
   /* ---------------- SELECT SCRIPT ---------------- */
-  socket.on("selectScript", ({ room, scriptName }) => {
-  const roomInfo = rooms[room];
-  if (!roomInfo) return;
+  socket.on("selectScript", ({ room, scriptId }) => {
+    const roomInfo = rooms[room];
+    if (!roomInfo) return;
 
-  const scriptObj = allScripts.find((s) => s.name === scriptName);
+    const scriptObj = allScripts.find((s) => s.id === scriptId);
     if (!scriptObj) {
-      console.log("Script not found:", scriptName);
+      console.log("Script not found:", scriptId);
       return;
     }
 
-    roomInfo.script = scriptName;
-    roomInfo.scriptData = scriptObj;
+    // Store the selected script
+    roomInfo.script = scriptId;       // store ID
+    roomInfo.scriptData = scriptObj;  // store full object
 
+    // Reset scene parameters
     roomInfo.karaokeStep = scriptObj.karaokeStep ?? 2;
     roomInfo.baseDelay = scriptObj.baseDelay ?? 90;
     roomInfo.punctuationDelay = scriptObj.punctuationDelay ?? 300;
-
     roomInfo.currentLineIndex = 0;
     roomInfo.currentCharIndex = 0;
 
+    // Emit to clients
     io.to(room).emit("scriptSelected", {
-      scriptName,
+      scriptId,
       scriptData: scriptObj,
       admin: roomInfo.admin,
     });
   });
+
 
   /* ---------------- CHARACTER ASSIGNMENT ---------------- */
   socket.on("assignCharacter", ({ room, character, username }) => {

@@ -2,7 +2,8 @@
   "type": "sitcoms",
   "scripts": [
     {
-      "name": "seinfeld",
+      "id": "s-the-opposite",
+      "name": "Seinfeld",
       "introAudio": "seinfeld.mp3",
       "title": "The Opposite",
       "characters": ["Jerry", "George", "Elaine", "Waitress", "Victoria", "Narrator"],

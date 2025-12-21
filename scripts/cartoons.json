@@ -2,8 +2,9 @@
   "type": "cartoons",
   "scripts": [
     {
+      "id": "fm-wacky-waveing",
       "name": "Family Guy",
-      "title": "Wacky Wavey",
+      "title": "Wacky Waving",
       "videoUri": "wacky-waving.mp4",
       "introAudio": "family-guy.mp3",
       "characters": ["Al Harrington"],
@@ -16,7 +17,8 @@
       ]
     },
     {
-      "name": "Simpsons",
+      "id": "ts-steamed-hams",
+      "name": "The Simpsons",
       "title": "Steamed Hams",
       "introAudio": "the-simpsons.mp3",
       "characters": ["Skinner", "Chalmers", "Narrator"],
@@ -52,20 +54,43 @@
         { "id": 29, "character": "Narrator", "text": "[Chalmers takes a bite out of a burger and chews it a little, while Skinner sips his drink.]"},
         { "id": 30, "character": "Chalmers", "text": "You know, these hamburgers are quite similar to the ones they have at Krusty Burger." },
         { "id": 31, "character": "Skinner", "text": "[chuckles] Oh, no! Patented Skinner Burgers! Old family recipe." }
-
-      ]
-    },
+        ]
+      },
     {
+      "id": "ram-two-brothers",
       "name": "Rick and Morty",
       "title": "Two Brothers",
       "videoUri": "two-brothers.mp4",
       "karaokeStep": 1,
-      "baseDelay": 65,
+      "baseDelay": 60,
       "punctuationDelay": 260,
-      "characters": ["Narrator"],
-      "lines": [ 
-        {"id": 1, "character": "Narrator", "text": " It's in theaters now! Coming this summer: Two brothers. In a van. And then a meteor hit... And they ran as fast as they could, from giant cat monsters. And then a giant tornado came. And that's when things got knocked into 12th gear... A Mexican armada shows up. With weapons made from Two--tomatoes. And you better bet your bottom dollar that these two brothers know how to handle business.... In: Alien.. Invasion.. Tomato Monster Mexican Armada Brothers.. Who Are Just Regular Brothers, Running In a Van.. From an Asteroid and All Sorts of Things THE MOVIE! Hold on, there's more.. Old women are coming and they're also in the movie and they're gonna come and, cross-attack these two brothers. But let's get back to the brothers because they're they have a strong bond. You don't want to know about it here but I'll tell you one thing the moon, it comes crashing into Earth And what do you do then? It's two brothers and and th-they're - It's called Two Brothers. Two brothers It's just called Two Brothers." }
+      "characters": ["TV Announcer"],
+      "lines": [
+        {
+          "id": 1,
+          "character": "TV Announcer",
+          "text": "It's in theaters now! Coming this summer: Two brothers. In a van. And then a meteor hit. And they ran as fast as they could, from giant cat monsters. And then a giant tornado came. And that's when things got knocked into 12th gear.... A Mexican armada shows up. With weapons made from Two--tomatoes. And you better bet your bottom dollar that these two brothers know how to handle business. In: Alien Invasion Tomato Monster Mexican Armada Brothers, Who Are Just Regular Brothers, Running In a Van From an Asteroid and All Sorts of Things THE MOVIE! Hold on, there's more! Old women are coming, and they're also in the movie, and they're gonna come, and cross-attack these two brothers. But let's get back to the brothers, because they're-- they have a strong bond. You don't want to know about it here, but I'll tell you one thing: The moon, it comes crashing into Earth. And what do you do then? It's two brothers and--and th-they're - It's called Two Brothers. Two brothers! It's just called Two Brothers."
+        }
+      ]
+    },
+    {
+      "id": "ram-ants-in-my-eyes",
+      "name": "Rick and Morty2",
+      "title": "Ants In My Eyes",
+      "imageUri": "ants-in-my-eyes.png",
+      "videoUri": "ants-in-my-eyes.mp4",
+      "karaokeStep": 1,
+      "baseDelay": 55,
+      "punctuationDelay": 250,
+      "characters": ["Ants-In-My-Eyes Johnson"],
+      "lines": [
+        {
+          "id": 1,
+          "character": "Ants-In-My-Eyes Johnson",
+          "text": "I'm Ants-In-My-Eyes Johnson, Here at Ants-in-My-Eyes Johnson's Electronics. I mean, there's so many ants in my eyes! And there's so many TVs, microwaves, radios I think, I can't-- I'm not 100% sure what we have here in stock, because I can't see anything. Our prices, I hope, aren't too low! Check out this refrigerator! Only $200! What about this microwave? Only $100! That's fair! I'm Ants-in-My-Eyes Johnson! Everything's black, I can't see a thing! And also I can't feel anything either-- did I mention that? But that's not as catchy as having ants in your eyes. So that always goes, you know, off by the wayside. I can't feel. It's a very rare disease. All my sens-- All my nerves, they don't allow for the sensation of touch. So I never know what's going on. Am I standing? Sitting? I don't know."
+        }
       ]
     }
   ]
 }
+         

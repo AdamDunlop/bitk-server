@@ -2,6 +2,7 @@
   "type": "stand-up",
   "scripts": [
     {
+      "id": "lck-of-course-but-maybe",
       "name": "Louis Ck",
       "title": "Of Course, But Maybe",
       "videoUri": null,
