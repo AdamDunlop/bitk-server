@@ -1,0 +1,624 @@
+{
+  "type": "sketches",
+  "scripts": [
+    {
+      "id": "mp-argument",
+      "name": "Monty Python",
+      "copyright": "© 1969–1983 Python (Monty) Pictures Limited. All rights reserved.",
+      "title": "Argument",
+      "characters": ["Man", "Receptionist", "Mr. Barnard", "Mr. Vibrating", "Complainer", "Spreaders", "Narrator"],
+      "lines": [
+        {
+          "id": 1,
+          "character": "Man",
+          "text": "Ah. I'd like to have an argument, please."
+        },
+        {
+          "id": 2,
+          "character": "Receptionist",
+          "text": "Certainly sir. Have you been here before?"
+        },
+        {
+          "id": 3,
+          "character": "Man",
+          "text": "No, I haven't, this is my first time."
+        },
+        {
+          "id": 4,
+          "character": "Receptionist",
+          "text": "I see. Well, do you want to have just one argument, or were you thinking of taking a course?"
+        },
+        {
+          "id": 5,
+          "character": "Man",
+          "text": "Well, what is the cost?"
+        },
+        {
+          "id": 6,
+          "character": "Receptionist",
+          "text": "Well, It's one pound for a five minute argument, but only eight pounds for a course of ten."
+        },
+        {
+          "id": 7,
+          "character": "Man",
+          "text": "Well, I think it would be best if I perhaps started off with just the one and then see how it goes."
+        },
+        {
+          "id": 8,
+          "character": "Receptionist",
+          "text": "Fine. Well, I'll see who's free at the moment."
+        },
+        {
+          "id": 9,
+          "character": "Narrator",
+          "text": "(Pause)"
+        },
+        {
+          "id": 10,
+          "character": "Receptionist",
+          "text": "Mr. DeBakey's free, but he's a little bit conciliatory. Ahh yes, Try Mr. Barnard; room 12."
+        },
+        {
+          "id": 11,
+          "character": "Man",
+          "text": "Thank you."
+        },
+        {
+          "id": 12,
+          "character": "Narrator",
+          "text": "(Walks down the hall. Opens door.)"
+        },
+        {
+          "id": 13,
+          "character": "Mr. Barnard",
+          "text": "WHAT DO YOU WANT?"
+        },
+        {
+          "id": 14,
+          "character": "Man",
+          "text": "Well, I was told outside that..."
+        },
+        {
+          "id": 15,
+          "character": "Mr. Barnard",
+          "text": "Don't give me that, you snotty-faced heap of parrot droppings!"
+        },
+        {
+          "id": 16,
+          "character": "Man",
+          "text": "What?"
+        },
+        {
+          "id": 17,
+          "character": "Mr. Barnard",
+          "text": "Shut your festering gob, you tit! Your type really makes me puke, you vacuous, coffee-nosed, malodorous, pervert!!!"
+        },
+        {
+          "id": 18,
+          "character": "Man",
+          "text": "Look, I CAME HERE FOR AN ARGUMENT, I'm not going to just stand...!!"
+        },
+        {
+          "id": 19,
+          "character": "Mr. Barnard",
+          "text": "OH, oh I'm sorry, but this is abuse."
+        },
+        {
+          "id": 20,
+          "character": "Man",
+          "text": "Oh, I see, well, that explains it."
+        },
+        {
+          "id": 21,
+          "character": "Mr. Barnard",
+          "text": "Ah yes, you want room 12A, Just along the corridor."
+        },
+        {
+          "id": 22,
+          "character": "Man",
+          "text": "Oh, Thank you very much. Sorry."
+        },
+        {
+          "id": 23,
+          "character": "Mr. Barnard",
+          "text": "Not at all."
+        },
+        {
+          "id": 24,
+          "character": "Man",
+          "text": "Thank You."
+        },
+        {
+          "id": 25,
+          "character": "Narrator",
+          "text": "(Under his breath) Stupid git!!"
+        },
+        {
+          "id": 26,
+          "character": "Narrator",
+          "text": "(Walk down the corridor)"
+        },
+        {
+          "id": 27,
+          "character": "Man",
+          "text": "(Knock)"
+        },
+        {
+          "id": 28,
+          "character": "Mr. Vibrating",
+          "text": "Come in."
+        },
+        {
+          "id": 29,
+          "character": "Man",
+          "text": "Ah, Is this the right room for an argument?"
+        },
+        {
+          "id": 30,
+          "character": "Mr. Vibrating",
+          "text": "I told you once."
+        },
+        {
+          "id": 31,
+          "character": "Man",
+          "text": "No you haven't."
+        },
+        {
+          "id": 32,
+          "character": "Mr. Vibrating",
+          "text": "Yes I have."
+        },
+        {
+          "id": 33,
+          "character": "Man",
+          "text": "When?"
+        },
+        {
+          "id": 34,
+          "character": "Mr. Vibrating",
+          "text": "Just now."
+        },
+        {
+          "id": 35,
+          "character": "Man",
+          "text": "No you didn't."
+        },
+        {
+          "id": 36,
+          "character": "Mr. Vibrating",
+          "text": "Yes I did."
+        },
+        {
+          "id": 37,
+          "character": "Man",
+          "text": "You didn't"
+        },
+        {
+          "id": 38,
+          "character": "Mr. Vibrating",
+          "text": "I did!"
+        },
+        {
+          "id": 39,
+          "character": "Man",
+          "text": "You did not!!"
+        },
+        {
+          "id": 40,
+          "character": "Mr. Vibrating",
+          "text": "Oh, I'm sorry, just one moment. Is this a five minute argument or the full half hour?"
+        },
+        {
+          "id": 41,
+          "character": "Man",
+          "text": "Oh, just the five minutes."
+        },
+        {
+          "id": 42,
+          "character": "Mr. Vibrating",
+          "text": "Ah, thank you. Anyway, I did."
+        },
+        {
+          "id": 43,
+          "character": "Man",
+          "text": "You most certainly did not."
+        },
+        {
+          "id": 44,
+          "character": "Mr. Vibrating",
+          "text": "Look, let's get this thing clear; I quite definitely told you."
+        },
+        {
+          "id": 45,
+          "character": "Man",
+          "text": "No you did not."
+        },
+        {
+          "id": 46,
+          "character": "Mr. Vibrating",
+          "text": "Yes I did."
+        },
+        {
+          "id": 47,
+          "character": "Man",
+          "text": "No you didn't."
+        },
+        {
+          "id": 48,
+          "character": "Mr. Vibrating",
+          "text": "Yes I did."
+        },
+        {
+          "id": 49,
+          "character": "Man",
+          "text": "No you didn't."
+        },
+        {
+          "id": 50,
+          "character": "Mr. Vibrating",
+          "text": "Yes I did."
+        },
+        {
+          "id": 51,
+          "character": "Man",
+          "text": "No you didn't."
+        },
+        {
+          "id": 52,
+          "character": "Mr. Vibrating",
+          "text": "Yes I did."
+        },
+        {
+          "id": 53,
+          "character": "Man",
+          "text": "You didn't."
+        },
+        {
+          "id": 54,
+          "character": "Mr. Vibrating",
+          "text": "Did."
+        },
+        {
+          "id": 55,
+          "character": "Man",
+          "text": "Oh look, this isn't an argument."
+        },
+        {
+          "id": 56,
+          "character": "Mr. Vibrating",
+          "text": "Yes it is."
+        },
+        {
+          "id": 57,
+          "character": "Man",
+          "text": "No it isn't. It's just contradiction."
+        },
+        {
+          "id": 58,
+          "character": "Mr. Vibrating",
+          "text": "No it isn't."
+        },
+        {
+          "id": 59,
+          "character": "Man",
+          "text": "It is!"
+        },
+        {
+          "id": 60,
+          "character": "Mr. Vibrating",
+          "text": "It is not."
+        },
+        {
+          "id": 61,
+          "character": "Man",
+          "text": "Look, you just contradicted me."
+        },
+        {
+          "id": 62,
+          "character": "Mr. Vibrating",
+          "text": "I did not."
+        },
+        {
+          "id": 63,
+          "character": "Man",
+          "text": "Oh you did!!"
+        },
+        {
+          "id": 64,
+          "character": "Mr. Vibrating",
+          "text": "No, no, no."
+        },
+        {
+          "id": 65,
+          "character": "Man",
+          "text": "You did just then."
+        },
+        {
+          "id": 66,
+          "character": "Mr. Vibrating",
+          "text": "Nonsense!"
+        },
+        {
+          "id": 67,
+          "character": "Man",
+          "text": "Oh, this is futile!"
+        },
+        {
+          "id": 68,
+          "character": "Mr. Vibrating",
+          "text": "No it isn't."
+        },
+        {
+          "id": 69,
+          "character": "Man",
+          "text": "I came here for a good argument."
+        },
+        {
+          "id": 70,
+          "character": "Mr. Vibrating",
+          "text": "No you didn't; no, you came here for an argument."
+        },
+        {
+          "id": 71,
+          "character": "Man",
+          "text": "An argument isn't just contradiction."
+        },
+        {
+          "id": 72,
+          "character": "Mr. Vibrating",
+          "text": "It can be."
+        },
+        {
+          "id": 73,
+          "character": "Man",
+          "text": "No it can't. An argument is a connected series of statements intended to establish a proposition."
+        },
+        {
+          "id": 74,
+          "character": "Mr. Vibrating",
+          "text": "No it isn't."
+        },
+        {
+          "id": 75,
+          "character": "Man",
+          "text": "Yes it is! It's not just contradiction."
+        },
+        {
+          "id": 76,
+          "character": "Mr. Vibrating",
+          "text": "Look, if I argue with you, I must take up a contrary position."
+        },
+        {
+          "id": 77,
+          "character": "Man",
+          "text": "Yes, but that's not just saying 'No it isn't.'"
+        },
+        {
+          "id": 78,
+          "character": "Mr. Vibrating",
+          "text": "Yes it is!"
+        },
+        {
+          "id": 79,
+          "character": "Man",
+          "text": "No it isn't!"
+        },
+        {
+          "id": 80,
+          "character": "Man",
+          "text": "Argument is an intellectual process. Contradiction is just the automatic gainsaying of any statement the other person makes."
+        },
+        {
+          "id": 81,
+          "character": "Narrator",
+          "text": "(short pause)"
+        },
+        {
+          "id": 82,
+          "character": "Mr. Vibrating",
+          "text": "No it isn't."
+        },
+        {
+          "id": 83,
+          "character": "Man",
+          "text": "It is."
+        },
+        {
+          "id": 84,
+          "character": "Mr. Vibrating",
+          "text": "Not at all."
+        },
+        {
+          "id": 85,
+          "character": "Man",
+          "text": "Now look."
+        },
+        {
+          "id": 86,
+          "character": "Mr. Vibrating",
+          "text": "(Rings bell) Good Morning."
+        },
+        {
+          "id": 87,
+          "character": "Man",
+          "text": "What?"
+        },
+        {
+          "id": 88,
+          "character": "Mr. Vibrating",
+          "text": "That's it. Good morning."
+        },
+        {
+          "id": 89,
+          "character": "Man",
+          "text": "I was just getting interested."
+        },
+        {
+          "id": 90,
+          "character": "Mr. Vibrating",
+          "text": "Sorry, the five minutes is up."
+        },
+        {
+          "id": 91,
+          "character": "Man",
+          "text": "That was never five minutes!"
+        },
+        {
+          "id": 92,
+          "character": "Mr. Vibrating",
+          "text": "I'm afraid it was."
+        },
+        {
+          "id": 93,
+          "character": "Man",
+          "text": "It wasn't."
+        },
+        {
+          "id": 94,
+          "character": "Narrator",
+          "text": "(Pause)"
+        },
+        {
+          "id": 95,
+          "character": "Mr. Vibrating",
+          "text": "I'm sorry, but I'm not allowed to argue anymore."
+        },
+        {
+          "id": 96,
+          "character": "Man",
+          "text": "What?!"
+        },
+        {
+          "id": 97,
+          "character": "Mr. Vibrating",
+          "text": "If you want me to go on arguing, you'll have to pay for another five minutes."
+        },
+        {
+          "id": 98,
+          "character": "Man",
+          "text": "Yes, but that was never five minutes, just now. Oh come on!"
+        },
+        {
+          "id": 99,
+          "character": "Mr. Vibrating",
+          "text": "(Hums)"
+        },
+        {
+          "id": 100,
+          "character": "Man",
+          "text": "Look, this is ridiculous."
+        },
+        {
+          "id": 101,
+          "character": "Mr. Vibrating",
+          "text": "I'm sorry, but I'm not allowed to argue unless you've paid!"
+        },
+        {
+          "id": 102,
+          "character": "Man",
+          "text": "Oh, all right."
+        },
+        {
+          "id": 103,
+          "character": "Narrator",
+          "text": "(pays money)"
+        },
+        {
+          "id": 104,
+          "character": "Mr. Vibrating",
+          "text": "Thank you."
+        },
+        {
+          "id": 105,
+          "character": "Narrator",
+          "text": "(short pause)"
+        },
+        {
+          "id": 106,
+          "character": "Man",
+          "text": "Well?"
+        },
+        {
+          "id": 107,
+          "character": "Mr. Vibrating",
+          "text": "Well what?"
+        },
+        {
+          "id": 108,
+          "character": "Man",
+          "text": "That wasn't really five minutes, just now."
+        },
+        {
+          "id": 109,
+          "character": "Mr. Vibrating",
+          "text": "I told you, I'm not allowed to argue unless you've paid."
+        },
+        {
+          "id": 110,
+          "character": "Man",
+          "text": "I just paid!"
+        },
+        {
+          "id": 111,
+          "character": "Mr. Vibrating",
+          "text": "No you didn't."
+        },
+        {
+          "id": 112,
+          "character": "Man",
+          "text": "I DID!"
+        },
+        {
+          "id": 113,
+          "character": "Mr. Vibrating",
+          "text": "No you didn't."
+        },
+        {
+          "id": 114,
+          "character": "Man",
+          "text": "Look, I don't want to argue about that."
+        },
+        {
+          "id": 115,
+          "character": "Mr. Vibrating",
+          "text": "Well, you didn't pay."
+        },
+        {
+          "id": 116,
+          "character": "Man",
+          "text": "Aha. If I didn't pay, why are you arguing? I Got you!"
+        },
+        {
+          "id": 117,
+          "character": "Mr. Vibrating",
+          "text": "No you haven't."
+        },
+        {
+          "id": 118,
+          "character": "Man",
+          "text": "Yes I have. If you're arguing, I must have paid."
+        },
+        {
+          "id": 119,
+          "character": "Mr. Vibrating",
+          "text": "Not necessarily. I could be arguing in my spare time."
+        },
+        {
+          "id": 120,
+          "character": "Man",
+          "text": "Oh I've had enough of this."
+        },
+        {
+          "id": 121,
+          "character": "Mr. Vibrating",
+          "text": "No you haven't."
+        },
+        {
+          "id": 122,
+          "character": "Man",
+          "text": "Oh Shut up."
+        } 
+      ]
+    }
+  ]
+}

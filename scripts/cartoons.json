@@ -9,12 +9,11 @@
       "videoUri": "wacky-waving.mp4",
       "introAudio": "family-guy.mp3",
       "characters": ["Al Harrington"],
-
       "lines": [
         {
           "id": 1,
           "character": "Al Harrington",
-          "text": "Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Hi, I’m Al Harrington President and CEO of Al Harrington’s Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Thanks to a shipping error I am now currently overstocked on Wacky Waving Inflatable Arm Flailing Tube Men and I am passing the savings on to you!.... Attract customers to your business. Make a splash at your next presentation. Keep grandma company protect your crops confuse your neighbors. African American? Hail a cab. Testify in church or just raise the roof! Whatever your Wacky Waving Inflatable Arm Flailing Tube Man needs are. So come on down to Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Route 2 in Weekapaug."
+          "text": "Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Wacky Waving Inflatable Arm Flailing Tube Man! Hi, I'm Al Harrington President and CEO of Al Harrington's Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Thanks to a shipping error I am now currently overstocked on Wacky Waving Inflatable Arm Flailing Tube Men and I am passing the savings on to you!... Attract customers to your business. Make a splash at your next presentation. Keep grandma company protect your crops confuse your neighbors. African American? Hail a cab. Testify in church or just raise the roof! Whatever your Wacky Waving Inflatable Arm Flailing Tube Man needs are. So come on down to Wacky Waving Inflatable Arm Flailing Tube Man emporium and warehouse. Route 2 in Weekapaug."
         }
       ]
     },
@@ -24,23 +23,23 @@
       "copyright": "© 1989–present Twentieth Century Fox Film Corporation. All rights reserved.",
       "title": "Steamed Hams",
       "introAudio": "the-simpsons.mp3",
-      "characters": ["Skinner", "Chalmers", "Narrator"],
+      "characters": ["Skinner", "Chalmers", "Agnes", "Narrator"],
       "lines": [
-        { "id": 1, "character": "Narrator", "text": "[Chalmers rings Skinner's doorbell while at the exterior. On the other hand at the interior Skinner opens the door.]", "audio": "vintage-doorbell.mp3" },       
+        { "id": 1, "character": "Narrator", "text": "[Chalmers rings Skinner's doorbell while at the exterior. On the other hand at the interior Skinner opens the door.]", "audio": "vintage-doorbell.mp3" },
         { "id": 2, "character": "Chalmers", "text": "Well, Seymour, I made it, despite your directions."},
         { "id": 3, "character": "Skinner", "text": "Ah, Superintendent Chalmers, welcome! I hope you're prepared for an unforgettable luncheon!"},
-        { "id": 4, "character": "Narrator", "text": "[Chalmers enters. In the dining room, he sits at the table by using a brown chair and places a bottle in an ice bucket, while Skinner runs to the kitchen, only to find his roast is burnt, and gasps in horror.]"},       
-        { "id": 5, "character": "Skinner", "text": "Skinner: Oh, ye gods! My roast is ruined!"},       
-        { "id": 6, "character": "Narrator", "text": "[Skinner peers out of the window and sees a Krusty Burger across the street.]"},       
-        { "id": 7, "character": "Skinner", "text": "But what if... I were to purchase fast food and disguise it as my own cooking? [chuckles] Delightfully devilish, Seymour."},       
-        { "id": 8, "character": "Narrator", "text": "[Skinner removes his apron, opens the window and begins to climb through, but Chalmers enters the kitchen and catches Skinner trying to leave.]"},       
+        { "id": 4, "character": "Narrator", "text": "[Chalmers enters. In the dining room, he sits at the table by using a brown chair and places a bottle in an ice bucket, while Skinner runs to the kitchen, only to find his roast is burnt, and gasps in horror.]"},
+        { "id": 5, "character": "Skinner", "text": "Oh, ye gods! My roast is ruined!"},
+        { "id": 6, "character": "Narrator", "text": "[Skinner peers out of the window and sees a Krusty Burger across the street.]"},
+        { "id": 7, "character": "Skinner", "text": "But what if... I were to purchase fast food and disguise it as my own cooking? [chuckles] Delightfully devilish, Seymour."},
+        { "id": 8, "character": "Narrator", "text": "[Skinner removes his apron, opens the window and begins to climb through, but Chalmers enters the kitchen and catches Skinner trying to leave.]"},
         { "id": 9, "character": "Chalmers", "text": "Ehhh"},
-        { "id": 10, "character": "Narrator", "text": "[ ... Skinner, with his crazy explanations... The superintendent's gonna need his medication .... When he hears Skinner's lame exaggerations, There'll be trouble in town - tonight!.... ]", "audio": "skinner-chalmers.mp3"}, 
+        { "id": 10, "character": "Narrator", "text": "[ ... Skinner, with his crazy explanations... The superintendent's gonna need his medication .... When he hears Skinner's lame exaggerations, There'll be trouble in town - tonight!.... ]", "audio": "skinner-chalmers.mp3"},
         { "id": 11, "character": "Chalmers", "text": "SEEEEEEEEEYMOOUUURRR!......" },
         { "id": 12, "character": "Skinner", "text": "Superintendent Chalmers, I was just uhhh stretching my calfs on the windo sill. Isometric excersize, care to join me?" },
         { "id": 13, "character": "Chalmers", "text": "Why is there smoke coming out of your oven Seymour?" },
         { "id": 14, "character": "Skinner", "text": "Oh, that isn't smoke, that's steam from the steamed clams we're having. Mmm steamed clams!" },
-        { "id": 15, "character": "Narrator", "text": "[Chalmers exits the room to the kitchen."},
+        { "id": 15, "character": "Narrator", "text": "[Chalmers exits the room to the kitchen.]"},
         { "id": 16, "character": "Skinner", "text": "Phew!" },
         { "id": 17, "character": "Narrator", "text": "[We see Skinner scampering off to Krusty Burger.]"},
         { "id": 18, "character": "Narrator", "text": "[Skinner enters the kitchen with a trey of Krusty Burgers.]"},
@@ -56,9 +55,26 @@
         { "id": 28, "character": "Chalmers", "text": "I see." },
         { "id": 29, "character": "Narrator", "text": "[Chalmers takes a bite out of a burger and chews it a little, while Skinner sips his drink.]"},
         { "id": 30, "character": "Chalmers", "text": "You know, these hamburgers are quite similar to the ones they have at Krusty Burger." },
-        { "id": 31, "character": "Skinner", "text": "[chuckles] Oh, no! Patented Skinner Burgers! Old family recipe." }
-        ]
-      },
+        { "id": 31, "character": "Skinner", "text": "[chuckles] Oh, no! Patented Skinner Burgers! Old family recipe." },
+        { "id": 32, "character": "chalmers", "text": "For steamed hams?" },
+        { "id": 33, "character": "Skinner", "text": "Yes." },
+        { "id": 34, "character": "Chalmers", "text": "Yes, and you call them steamed hams, despite the fact they are obviously grilled." },
+        { "id": 35, "character": "Skinner", "text": "Y- Uh.. you know, the... One thing I should... Excuse me for one second." },
+        { "id": 36, "character": "Chalmers", "text": "Of course." },
+        { "id": 37, "character": "Narrator", "text": "[Skinner enters and leaves the kitchen swiftly upon seeing it is now on fire]" },
+        { "id": 38, "character": "Skinner", "text": "[Pretends to Yawns] Well, that was wonderful. A good time was had by all. I'm pooped." },
+        { "id": 39, "character": "Chalmers", "text": "Yes, I really should be-- GOOD LORD, WHAT IS HAPPENING IN THERE!?" },
+        { "id": 40, "character": "Skinner", "text": "Aurora Borealis?" },
+        { "id": 41, "character": "Chalmers", "text": "AURORA BOREALIS!? AT THIS TIME OF YEAR, AT THIS TIME OF DAY, IN THIS PART OF THE COUNTRY, LOCALIZED ENTIRELY WITHIN YOUR KITCHEN!?" },
+        { "id": 42, "character": "Skinner", "text": "Yes!" },
+        { "id": 43, "character": "Chalmers", "text": "May I see it?" },
+        { "id": 44, "character": "Skinner", "text": "No." },
+        { "id": 45, "character": "Agnes", "text": "SEYMOUR!!! THE HOUSE IS ON FIRE!!!" },
+        { "id": 46, "character": "Skinner", "text": "No, mother, it's just the Northern Lights." },
+        { "id": 47, "character": "Chalmers", "text": "Well, Seymour, you are an odd fellow, but I must say... you steam a good ham." },
+        { "id": 48, "character": "Agnes", "text": "HELP!!! HEEEELP!!!" }
+      ]
+    },
     {
       "id": "ram-two-brothers",
       "name": "Rick and Morty",
@@ -85,8 +101,8 @@
       "imageUri": "ants-in-my-eyes.png",
       "videoUri": "ants-in-my-eyes.mp4",
       "karaokeStep": 1,
-      "baseDelay": 55,
-      "punctuationDelay": 250,
+      "baseDelay": 50,
+      "punctuationDelay": 245,
       "characters": ["Ants-In-My-Eyes Johnson"],
       "lines": [
         {
@@ -115,18 +131,17 @@
         {"id": 6, "character": "Fake Doors Salesman", "text": "Step on it, we all got places to be!  Son of a bitch!  "},
         {"id": 7, "character": "Narrator", "text": "[The Salesman pulls into a driveway]" },
         {"id": 8, "character": "Morty", "text": "See, that must be where he lives. OK..."},
-        {"id": 7, "character": "Narrator", "text": "[The Salesman starts making himself a peanut butter and jelly sandwich]" },
-        {"id": 9, "character": "Rick", "text": "Huh. Making himself a sandwich now... "},
-        {"id": 10, "character": "Fake Doors Salesman", "text": "Hey everybody! So this is my house, I just made a sandwich, peanut butter and jelly, still here, still selling fake doors!"},
-        {"id": 11, "character": "Morty", "text": "What?"},
-        {"id": 12, "character": "Rick", "text": "Oh my god, it's still the commerical!"},
-        {"id": 13, "character": "Fake Doors Salesman", "text": " We have fake doors like you wouldn't believe! What are you worried about? Come get fake doors. Call us up, and order some fake doors today. Don't even hesitate, Don't even worry and don't even... " },
-        {"id": 14, "character": "Rick", "text": "I'm bored, change it."},
-        {"id": 15, "character": "Morty", "text": "No wait Rick, Hold on hold on... "},
-        {"id": 16, "character": "Fake Doors Salesman", "text": "give it a second thought. That's our slogan. See it on the bottom of the screen, below our name. Here's another slogan, right below that one. What are you worried about? Come get fake doors! Get in here quick, get out quicker, with an arm of fake doors in you arms. Don't even worry about it!" },
-        {"id": 15, "character": "Morty", "text": "Okay you can change it."}
+        {"id": 9, "character": "Narrator", "text": "[The Salesman starts making himself a peanut butter and jelly sandwich]" },
+        {"id": 10, "character": "Rick", "text": "Huh. Making himself a sandwich now... "},
+        {"id": 11, "character": "Fake Doors Salesman", "text": "Hey everybody! So this is my house, I just made a sandwich, peanut butter and jelly, still here, still selling fake doors!"},
+        {"id": 12, "character": "Morty", "text": "What?"},
+        {"id": 13, "character": "Rick", "text": "Oh my god, it's still the commerical!"},
+        {"id": 14, "character": "Fake Doors Salesman", "text": " We have fake doors like you wouldn't believe! What are you worried about? Come get fake doors. Call us up, and order some fake doors today. Don't even hesitate, Don't even worry and don't even... " },
+        {"id": 15, "character": "Rick", "text": "I'm bored, change it."},
+        {"id": 16, "character": "Morty", "text": "No wait Rick, Hold on hold on... "},
+        {"id": 17, "character": "Fake Doors Salesman", "text": "give it a second thought. That's our slogan. See it on the bottom of the screen, below our name. Here's another slogan, right below that one. What are you worried about? Come get fake doors! Get in here quick, get out quicker, with an arm of fake doors in you arms. Don't even worry about it!" },
+        {"id": 18, "character": "Morty", "text": "Okay you can change it."}
       ]
     }
   ]
 }
-         
