@@ -6,10 +6,46 @@
       "name": "Louis Ck",
       "title": "Of Course, But Maybe",
       "videoUri": null,
-      "imageUri": "of-course-but-maybe.jpg",
+      "imageUri": "of-course-but-maybe.png",
       "characters": ["Louis"],
       "lines": [
-        { "id": 1, "character": "Louis", "text": "Everybody has a competition in their brain of good thoughts and bad thoughts. Hopefully, the good thoughts win. For me, I always have both. I have like, this thing. I believe the good thing, that's the thing I believe. Then there's this thing. I don't believe it, but it's there. It's always 'this thing' and then 'this thing'. It's become a category in my brain that I call “of course but maybe.I'll give you an example, okay? Like of course, of course, children who have nut allergies need to be protected, of course. We have to segregate their food from nuts, have their medication available at all times, and anybody who manufactures or serves food needs to be aware of deadly nut allergies, of course, but maybe. Maybe if touching a nut kills you, you're supposed to die. Of course not, of course not, of course not. Jesus. I have a nephew who has that. I'd be devastated if something happened to him. But maybe, maybe if we all just do this for one year, we're done with nut allergies for ever. No, of course not, of course, if you're fighting for your country and you get shot or hurt, it's a terrible tragedy, of course, of course, but maybe, may be if you pick up a gun and go to another country and you get shot, it's not that weird. Maybe if you get shot by the dude, you were just shooting at, it's a tiny bit your fault. " }
+        { "id": 1, "character": "Louis", "text": "Everybody has a competition in their brain of good thoughts and bad thoughts. Hopefully, the good thoughts win. For me, I always have both. " },
+        { "id": 2, "character": "Louis", "text": "I have like, this thing. I believe the good thing, that's the thing I believe. Then there's this thing. I don't believe it, but it's there. It's always 'this thing' and then 'this thing'. " },
+        { "id": 3, "character": "Louis", "text": "It's always 'this thing' and then 'this thing'. It's become a category in my brain that I call “of course but maybe. I'll give you an example, okay?" },
+        { "id": 4, "character": "Louis", "text": "Like of course, of course, children who have nut allergies need to be protected, of course. We have to segregate their food from nuts, have their medication available at all times, and anybody who manufactures or serves food needs to be aware of deadly nut allergies, of course, but maybe." },
+        { "id": 5, "character": "Louis", "text": "Maybe if touching a nut kills you, you're supposed to die... " },
+        { "id": 6, "character": "Louis", "text": "Of course not, of course not, of course not. Jesus. I have a nephew who has that. I'd be devastated if something happened to him. But maybe, maybe if we all just do this for one year, we're done with nut allergies for ever." },
+        { "id": 7, "character": "Louis", "text": "No, of course not, of course, if you're fighting for your country and you get shot or hurt, it's a terrible tragedy, of course, of course, " },
+        { "id": 7, "character": "Louis", "text": "But maybe, may be if you pick up a gun and go to another country and you get shot, it's not that weird." },
+        { "id": 7, "character": "Louis", "text": "Maybe if you get shot by the dude, you were just shooting at, it's a tiny bit your fault. " }
+      ]
+    },
+    {
+      "id": "nb-back-in-time",
+      "name": "Nate Bargatze",
+      "title": "Back in Time",
+      "videoUri": null,
+      "imageUri": "nate-bargatze.jpeg",
+      "characters": ["Nate"],
+      "lines": [
+        { "id": 1, "character": "Nate", "text": "Yep. It’s… like, I think of it like… like time traveling." },
+        { "id": 2, "character": "Nate", "text": "Like, if I could go back in time... like, if I could go back in time tonight and go back to, like, the ’20s, knowing everything I know right now, I don’t think I would make a difference." },
+        { "id": 3, "character": "Nate", "text": "I don’t think you guys would even hear about it. I don’t think you would." },
+        { "id": 4, "character": "Nate", "text": "I just don’t… like, ’cause I don’t have anything to get… you know?" },
+        { "id": 5, "character": "Nate", "text": "Like I would go back, and I would see, like, some guy on an old phone, and I would be like, Hey, eventually they have phones you, like, carry in your pocket." },
+        { "id": 6, "character": "Nate", "text": "And they’re like, Yeah? It’s like, How do they do it?" },
+        { "id": 7, "character": "Nate", "text": "I’m like, Phew, I mean, I don’t know how they do it. Oh. I think it’s a satellite? I think… a satellite?" },
+        { "id": 8, "character": "Nate", "text": "They’re like, What’s a satellite? Oh, I shouldn’t have even said that, uh…" },
+        { "id": 9, "character": "Nate", "text": "It’s like metal… metal’s got to go pretty high in the air. I don’t know if you guys are doing…" },
+        { "id": 10, "character": "Nate", "text": "I don’t even know if I could prove I’m from the future. I don’t even think I could." },
+        { "id": 11, "character": "Nate", "text": "I think I would just get stuck, ’cause they would want something." },
+        { "id": 12, "character": "Nate", "text": "Like, Who’s the next president? Oh, boy. Uh…" },
+        { "id": 13, "character": "Nate", "text": "Ooh… Abraham Lincoln. You guys are gonna love him. He’s really good." },
+        { "id": 14, "character": "Nate", "text": "They’d just think I’m from the past." },
+        { "id": 15, "character": "Nate", "text": "That’s… they were like… it would just look…" },
+        { "id": 16, "character": "Nate", "text": "And then I’d have to get a regular job." },
+        { "id": 17, "character": "Nate", "text": "I would just have to, like, wait tables or something in the ’20s." },
+        { "id": 18, "character": "Nate", "text": "I would go back in time and do worse than I’m doing right now." }
       ]
     }
   ]
