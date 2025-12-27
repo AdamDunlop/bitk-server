@@ -86,21 +86,21 @@
         { "id": 19, "character": "Darren", "text": "That's four hours ahead." },
         { "id": 20, "character": "Andy", "text": "In the morning!" },
         { "id": 21, "character": "Darren", "text": "Oh, okay yes." },
-        { "id": 22, "character": "Andy", "text": "Suppose they get in at nine..." },
-        { "id": 23, "character": "Darren", "text": "Ten. Have a cup of coffee, say hello to everyone..." },
-        { "id": 24, "character": "Andy", "text": "Right -Add eight." },
+        { "id": 22, "character": "Andy", "text": "Suppose they get in at nine" },
+        { "id": 23, "character": "Darren", "text": "Ten. Have a cup of coffee, say hello to everyone." },
+        { "id": 24, "character": "Andy", "text": "Right... Add eight." },
         { "id": 25, "character": "Darren", "text": "to what?" },
-        { "id": 26, "character": "Andy", "text": "Ten!" },
+        { "id": 26, "character": "Andy", "text": "TEN!" },
         { "id": 27, "character": "Darren", "text": "Ten... right, eighteen" },
         { "id": 28, "character": "Andy", "text": "What do you mean eighteen!?" },
         { "id": 29, "character": "Darren", "text": "No, add eight hours, you mean, yeah sorry." },
         { "id": 30, "character": "Andy", "text": "So call them at 6 o'clock." },
         { "id": 31, "character": "Darren", "text": "Right, their time." },
-        { "id": 32, "character": "Andy", "text": "Our time!" },
+        { "id": 32, "character": "Andy", "text": "OUR TIME!" },
         { "id": 33, "character": "Darren", "text": "Right, and what time will it be over there?" },
-        { "id": 34, "character": "Andy", "text": "Ten!" },
+        { "id": 34, "character": "Andy", "text": "TEN!" },
         { "id": 35, "character": "Darren", "text": "Right, at night?" },
-        { "id": 36, "character": "Andy", "text": "In the morning!... Forget it." }
+        { "id": 36, "character": "Andy", "text": "IN THE MORNING!... Forget it." }
       ]
     }
   ]
