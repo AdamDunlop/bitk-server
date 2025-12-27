@@ -177,30 +177,33 @@ io.on("connection", (socket) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
 
+    socket.join(room);
+
     const scriptObj = allScripts.find((s) => s.id === scriptId);
     if (!scriptObj) {
       console.log("Script not found:", scriptId);
       return;
     }
 
-    // Store the selected script
-    roomInfo.script = scriptId;       // store ID
-    roomInfo.scriptData = scriptObj;  // store full object
+    roomInfo.script = scriptId;
+    roomInfo.scriptData = Object.freeze({ ...scriptObj });
 
-    // Reset scene parameters
     roomInfo.karaokeStep = scriptObj.karaokeStep ?? 2;
     roomInfo.baseDelay = scriptObj.baseDelay ?? 90;
     roomInfo.punctuationDelay = scriptObj.punctuationDelay ?? 300;
     roomInfo.currentLineIndex = 0;
     roomInfo.currentCharIndex = 0;
+    roomInfo.sceneStarted = false;
 
-    // Emit to clients
     io.to(room).emit("scriptSelected", {
       scriptId,
-      scriptData: scriptObj,
+      scriptData: roomInfo.scriptData,
+      karaokeStep: roomInfo.karaokeStep,
+      baseDelay: roomInfo.baseDelay,
+      punctuationDelay: roomInfo.punctuationDelay,
       admin: roomInfo.admin,
     });
-  });
+});
 
 
   /* ---------------- CHARACTER ASSIGNMENT ---------------- */
