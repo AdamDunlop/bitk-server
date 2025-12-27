@@ -5,54 +5,45 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
-
+// Define the base assets path
+const ASSETS_PATH = path.join(__dirname, "assets");
 const app = express();
 
 app.use(cors());
-app.use("/audio", express.static(path.join(__dirname, "assets/audio")));
-app.use("/images", express.static("assets/images"));
-app.use(
-  "/video",
-  express.static(path.join(__dirname, "assets/video"), {
-    setHeaders: (res, filePath) => {
-      if (filePath.endsWith(".mp4")) {
-        res.setHeader("Content-Type", "video/mp4");
-      }
-    },
-  })
-);
+app.use("/audio", express.static(path.join(ASSETS_PATH, "audio")));
+// Serve image files
+app.use("/images", express.static(path.join(ASSETS_PATH, "images")));
+// Serve video files with correct Content-Type
+app.use("/video", express.static(path.join(ASSETS_PATH, "video"), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith(".mp4")) {
+      res.setHeader("Content-Type", "video/mp4");
+    } else if (filePath.endsWith(".mov")) {
+      res.setHeader("Content-Type", "video/quicktime");
+    }
+  },
+}));
 
-const PORT = 3001; // or any free port
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: "*" },
+app.get("/", (req, res) => {
+  res.send("BitKaraoke server is running. Use /images, /video, /audio paths.");
 });
 
-const scriptsDir = path.join(__dirname, "scripts");
-
-const allScripts = fs.readdirSync(scriptsDir)
-  .filter(file => file.endsWith(".json"))
-  .map(file => {
-    const raw = fs.readFileSync(path.join(scriptsDir, file), "utf-8");
-    return JSON.parse(raw);
-  })
-  .flatMap(scriptGroup => scriptGroup.scripts);
+/* ----------------- CREATE SERVER ----------------- */
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
 
 /* ----------------- GLOBAL STATE ----------------- */
-let rooms = {};
-let roomList = [];
+let rooms = {}; // roomName => roomInfo
+let roomList = []; // [{ name, admin }]
 let activeUsers = [];
 
 /* ----------------- LOAD SCRIPTS ----------------- */
+const scriptsDir = path.join(__dirname, "scripts");
+
 function loadAllScripts() {
-  const scriptsDir = path.join(__dirname, "scripts");
   if (!fs.existsSync(scriptsDir)) return {};
 
-  const scriptFiles = fs
-    .readdirSync(scriptsDir)
-    .filter((f) => f.endsWith(".json"));
+  const scriptFiles = fs.readdirSync(scriptsDir).filter((f) => f.endsWith(".json"));
   const scripts = {};
 
   scriptFiles.forEach((file) => {
@@ -69,7 +60,8 @@ function loadAllScripts() {
   return scripts;
 }
 
-let SCRIPTS = loadAllScripts();
+const SCRIPTS = loadAllScripts();
+const allScripts = Object.values(SCRIPTS);
 
 /* ----------------- SOCKET CONNECTION ----------------- */
 io.on("connection", (socket) => {
@@ -80,53 +72,88 @@ io.on("connection", (socket) => {
     socket.data.username = username;
 
     if (!activeUsers.includes(username)) activeUsers.push(username);
-
-    console.log("Login:", username, "ActiveUsers:", activeUsers);
-
-    // Emit to all clients
     io.emit("activeUsers", activeUsers);
 
-    // Existing emits
     socket.emit("rooms", roomList);
-    socket.emit("scriptListFull", Object.values(SCRIPTS));
+    socket.emit("scriptListFull", allScripts);
+    console.log("Login:", username, "ActiveUsers:", activeUsers);
   });
 
   /* ---------------- CREATE ROOM ---------------- */
   socket.on("createRoom", ({ roomName }) => {
-    if (!rooms[roomName]) {
-      rooms[roomName] = {
-        admin: socket.data.username,
-        members: {},
-        script: null,
-        scriptData: null,
-        characterAssignments: {},
-        sceneStarted: false,
-        currentLineIndex: 0,
-        currentCharIndex: 0,
-        karaokeStep: 2,
-        baseDelay: 90,
-        punctuationDelay: 300,
-        lineTimer: null,
-      };
+    if (!socket.data.username) {
+      socket.emit("errorMessage", "Unauthorized");
+      return;
     }
-    roomList = Object.keys(rooms);
+
+    // Check if room name already exists
+    if (rooms[roomName]) {
+      socket.emit("errorMessage", "Room name is already taken. Please choose a new name.");
+      return;
+    }
+
+    // Check if user already has a room
+    const userAlreadyHasRoom = Object.values(rooms).some(
+      (room) => room.admin === socket.data.username
+    );
+    if (userAlreadyHasRoom) {
+      socket.emit("errorMessage", "You already have a room.");
+      return;
+    }
+
+    // Create the room
+    rooms[roomName] = {
+      admin: socket.data.username,
+      members: {},
+      script: null,
+      scriptData: null,
+      characterAssignments: {},
+      sceneStarted: false,
+      currentLineIndex: 0,
+      currentCharIndex: 0,
+      karaokeStep: 2,
+      baseDelay: 90,
+      punctuationDelay: 300,
+      lineTimer: null,
+    };
+
+    roomList = Object.keys(rooms).map((name) => ({
+      name,
+      admin: rooms[name].admin,
+    }));
+
     io.emit("rooms", roomList);
     console.log("Room created:", roomName);
   });
 
+
   /* ---------------- DELETE ROOM ---------------- */
   socket.on("deleteRoom", ({ roomName }) => {
     if (!roomName || !rooms[roomName]) return;
+
+    if (!socket.data?.username) {
+      socket.emit("errorMessage", "Unauthorized");
+      return;
+    }
 
     if (rooms[roomName].admin !== socket.data.username) {
       socket.emit("errorMessage", "Only the room admin can delete this room");
       return;
     }
 
+    // Notify users & kick them out
+    io.to(roomName).emit("roomDeleted", roomName);
+    io.in(roomName).socketsLeave(roomName);
+
     if (rooms[roomName].lineTimer) clearTimeout(rooms[roomName].lineTimer);
 
     delete rooms[roomName];
-    roomList = Object.keys(rooms);
+
+    roomList = Object.keys(rooms).map((name) => ({
+      name,
+      admin: rooms[name].admin,
+    }));
+
     io.emit("rooms", roomList);
     console.log("Room deleted:", roomName);
   });
@@ -139,26 +166,23 @@ io.on("connection", (socket) => {
     rooms[room].members[socket.id] = name;
     socket.join(room);
 
-    // Send current room members to everyone
     io.to(room).emit("roomState", {
       users: Object.values(rooms[room].members),
       admin: rooms[room].admin,
     });
 
-    // Send full script list
-    socket.emit("scriptListFull", Object.values(SCRIPTS));
+    socket.emit("scriptListFull", allScripts);
 
-    // Sync current script & assignments to **new user only**
     if (rooms[room].script && rooms[room].scriptData) {
-      socket.emit("scriptSelected", { 
+      socket.emit("scriptSelected", {
         scriptName: rooms[room].script,
         scriptData: rooms[room].scriptData,
-        admin: rooms[room].admin
+        admin: rooms[room].admin,
       });
     }
+
     socket.emit("characterAssignments", rooms[room].characterAssignments);
 
-    // If scene is running, sync current line progress
     if (rooms[room].sceneStarted) {
       socket.emit("sceneStarted", {
         scriptData: rooms[room].scriptData,
@@ -167,7 +191,6 @@ io.on("connection", (socket) => {
         currentCharIndex: rooms[room].currentCharIndex,
       });
     }
-
 
     console.log(`${name} joined room ${room}`);
   });
@@ -187,7 +210,6 @@ io.on("connection", (socket) => {
 
     roomInfo.script = scriptId;
     roomInfo.scriptData = Object.freeze({ ...scriptObj });
-
     roomInfo.karaokeStep = scriptObj.karaokeStep ?? 2;
     roomInfo.baseDelay = scriptObj.baseDelay ?? 90;
     roomInfo.punctuationDelay = scriptObj.punctuationDelay ?? 300;
@@ -203,8 +225,7 @@ io.on("connection", (socket) => {
       punctuationDelay: roomInfo.punctuationDelay,
       admin: roomInfo.admin,
     });
-});
-
+  });
 
   /* ---------------- CHARACTER ASSIGNMENT ---------------- */
   socket.on("assignCharacter", ({ room, character, username }) => {
@@ -247,10 +268,8 @@ io.on("connection", (socket) => {
       currentCharIndex: roomInfo.currentCharIndex,
     });
 
-
-
     function advanceChar() {
-      if (!roomInfo.sceneStarted) return; // stop early if scene was stopped
+      if (!roomInfo.sceneStarted) return;
       const line = roomInfo.scriptData.lines[roomInfo.currentLineIndex];
       if (!line) return;
 
@@ -259,8 +278,7 @@ io.on("connection", (socket) => {
 
       for (
         let i = 0;
-        i < roomInfo.karaokeStep &&
-        roomInfo.currentCharIndex + i < line.text.length;
+        i < roomInfo.karaokeStep && roomInfo.currentCharIndex + i < line.text.length;
         i++
       ) {
         const char = line.text[roomInfo.currentCharIndex + i];
@@ -304,9 +322,7 @@ io.on("connection", (socket) => {
     io.to(room).emit("characterAssignments", {});
   });
 
-
   /* ---------------- STOP SCENE ---------------- */
-
   socket.on("stopScene", ({ room }) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
@@ -321,7 +337,7 @@ io.on("connection", (socket) => {
     io.to(room).emit("sceneStopped");
   });
 
-  // END SCENE (clear assignments)
+  /* ---------------- END SCENE ---------------- */
   socket.on("endScene", ({ room }) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
@@ -333,10 +349,8 @@ io.on("connection", (socket) => {
     roomInfo.currentLineIndex = 0;
     roomInfo.currentCharIndex = 0;
 
-    // Unassign all characters
     roomInfo.characterAssignments = {};
     io.to(room).emit("characterAssignments", {});
-
     io.to(room).emit("sceneStopped");
   });
 
@@ -344,29 +358,25 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const username = socket.data.username;
 
-    // Remove from global activeUsers
     if (username) {
       const index = activeUsers.indexOf(username);
       if (index !== -1) activeUsers.splice(index, 1);
       io.emit("activeUsers", activeUsers);
     }
 
-    // Remove from any rooms
     for (const room in rooms) {
       if (rooms[room].members[socket.id]) {
         delete rooms[room].members[socket.id];
-        io.to(room).emit(
-          "roomState",
-          Object.values(rooms[room].members)
-        );
+        io.to(room).emit("roomState", Object.values(rooms[room].members));
       }
     }
-
     console.log("Socket disconnected:", socket.id);
   });
 });
 
+
 /* ---------------- START SERVER ---------------- */
-server.listen(3000, () => {
-  console.log("✅ Server running on port 3000");
+const PORT = 3000;
+server.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });
