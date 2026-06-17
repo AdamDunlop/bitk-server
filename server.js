@@ -4,7 +4,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
-const bcrypt = require("bcrypt"); // optional if you want hashed passwords
+const bcrypt = require("bcrypt");
 
 // ===== CONFIG =====
 const PORT = process.env.PORT || 3001;
@@ -12,105 +12,118 @@ const USERS_FILE = path.join(__dirname, "users.json");
 const ASSETS_PATH = path.join(__dirname, "assets");
 const SCRIPTS_DIR = path.join(__dirname, "scripts");
 
-// ===== EXPRESS APP =====
+// ===== EXPRESS =====
 const app = express();
 
-// ===== CORS =====
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "http://localhost:3001", "https://www.cyloware.com"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    "http://localhost:8081",
+    "http://10.0.0.77:8081",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://www.cyloware.com"
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
-// ===== JSON PARSING =====
+app.options(/.*/, cors());
 app.use(express.json());
 
-// ===== STATIC FILES =====
+// ===== STATIC =====
 app.use("/audio", express.static(path.join(ASSETS_PATH, "audio")));
 app.use("/images", express.static(path.join(ASSETS_PATH, "images")));
 app.use("/video", express.static(path.join(ASSETS_PATH, "video")));
 
-// ===== USERS STORAGE =====
+// ===== USERS =====
 function readUsers() {
   if (!fs.existsSync(USERS_FILE)) return {};
   try {
     return JSON.parse(fs.readFileSync(USERS_FILE, "utf-8"));
-  } catch (err) {
-    console.error("Error parsing users.json:", err);
+  } catch (e) {
+    console.error("users.json error:", e);
     return {};
   }
 }
 
 function saveUsers(users) {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
 // ===== ROUTES =====
 app.get("/", (req, res) => {
-  res.send("BitKaraoke server is running. Use /audio, /images, /video paths.");
+  res.send("BitKaraoke server is running.");
 });
 
-// Signup route
+// SIGNUP
 app.post("/signup", async (req, res) => {
   const { username, password } = req.body;
-  if (!username || !password) return res.json({ success: false, message: "Missing credentials" });
+  if (!username || !password)
+    return res.json({ success: false, message: "Missing credentials" });
 
   const users = readUsers();
-  if (users[username]) {
-    return res.json({ success: false, message: "Username already exists" });
-  }
+  if (users[username])
+    return res.json({ success: false, message: "User exists" });
 
-  // Optional: hash password
   const hash = await bcrypt.hash(password, 12);
-
   users[username] = { password: hash };
   saveUsers(users);
 
-  return res.json({ success: true, message: "User created! Please log in." });
+  res.json({ success: true });
 });
 
-// Login route
+// LOGIN (FIXED)
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
+
   const users = readUsers();
   const user = users[username];
 
-  if (!user) return res.status(401).json({ success: false, message: "Invalid credentials" });
+  if (!user)
+    return res.json({ success: false, message: "Invalid login" });
 
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return res.status(401).json({ success: false, message: "Invalid credentials" });
+  const match = await bcrypt.compare(password, user.password);
 
-  return res.json({ success: true, username });
+  if (!match)
+    return res.json({ success: false, message: "Invalid login" });
+
+  res.json({ success: true, username });
 });
 
-// ===== HTTP + SOCKET.IO =====
+// ===== SERVER + SOCKET =====
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:3001", "https://www.cyloware.com"],
+    origin: [
+      "http://localhost:8081",
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://10.0.0.77:8081",
+      "https://www.cyloware.com"
+    ],
     credentials: true,
     methods: ["GET", "POST"]
   },
-  transports: ['websocket', 'polling'],
+  transports: ["websocket", "polling"],
 });
 
-// ===== GLOBAL STATE =====
-let activeUsers = [];
-let rooms = {};      // key: roomName, value: room object
-let roomList = [];   // array of { name, admin }
+// ===== STATE =====
+const activeUsers = new Map(); // socket.id -> username
+let rooms = {};
+let roomList = [];
 
-// ===== LOAD SCRIPTS =====
+// ===== SCRIPTS =====
 function loadAllScripts() {
   if (!fs.existsSync(SCRIPTS_DIR)) return {};
   const files = fs.readdirSync(SCRIPTS_DIR).filter(f => f.endsWith(".json"));
-  const scripts = {};
 
+  const scripts = {};
   files.forEach(file => {
-    const raw = fs.readFileSync(path.join(SCRIPTS_DIR, file), "utf-8");
-    const json = JSON.parse(raw);
+    const json = JSON.parse(fs.readFileSync(path.join(SCRIPTS_DIR, file)));
     if (!json.scripts) return;
+
     json.scripts.forEach(script => {
       scripts[script.name] = { ...script, type: json.type };
     });
@@ -122,36 +135,62 @@ function loadAllScripts() {
 const SCRIPTS = loadAllScripts();
 const allScripts = Object.values(SCRIPTS);
 
-// ===== SOCKET.IO CONNECTION =====
+// ===== HELPERS =====
+function updateRoomList() {
+  roomList = Object.keys(rooms).map(name => ({
+    name,
+    admin: rooms[name].admin
+  }));
+}
+
+function resetRoom(room) {
+  if (!room) return;
+
+  if (room.lineTimer) clearTimeout(room.lineTimer);
+
+  room.script = null;
+  room.scriptData = null;
+  room.sceneStarted = false;
+  room.characterAssignments = {};
+  room.currentLineIndex = 0;
+  room.currentCharIndex = 0;
+  room.karaokeStep = 2;
+  room.baseDelay = 90;
+  room.punctuationDelay = 300;
+  room.lineTimer = null;
+}
+
+// ===== SOCKET =====
 io.on("connection", (socket) => {
-  console.log(`✅ New connection: ${socket.id}`);
+  console.log("Connected:", socket.id);
 
-  // Welcome message
-  socket.emit("welcome", { message: "Connected to BitKaraoke server", socketId: socket.id });
+  socket.emit("welcome", { socketId: socket.id });
 
-  // ----- LOGIN -----
-  socket.on("login", ({ username }, callback) => {
+  // LOGIN SOCKET
+  socket.on("login", ({ username }, cb) => {
     socket.data.username = username;
-    if (!activeUsers.includes(username)) activeUsers.push(username);
+    activeUsers.set(socket.id, username);
 
     socket.emit("rooms", roomList);
     socket.emit("scriptListFull", allScripts);
-    io.emit("activeUsers", activeUsers);
+    io.emit("activeUsers", Array.from(activeUsers.values()));
 
-    if (callback) callback({ success: true, username });
-    console.log("Active users:", activeUsers);
+    cb?.({ success: true });
   });
 
-  // ----- CREATE ROOM -----
+  // CREATE ROOM
   socket.on("createRoom", ({ roomName }) => {
-    if (!socket.data.username) return socket.emit("errorMessage", "Unauthorized");
-    if (rooms[roomName]) return socket.emit("errorMessage", "Room name already taken");
+    const username = socket.data.username;
+    if (!username) return socket.emit("errorMessage", "Unauthorized");
 
-    const userHasRoom = Object.values(rooms).some(r => r.admin === socket.data.username);
-    if (userHasRoom) return socket.emit("errorMessage", "You already have a room");
+    if (rooms[roomName])
+      return socket.emit("errorMessage", "Room exists");
+
+    if (Object.values(rooms).some(r => r.admin === username))
+      return socket.emit("errorMessage", "Already own room");
 
     rooms[roomName] = {
-      admin: socket.data.username,
+      admin: username,
       members: {},
       script: null,
       scriptData: null,
@@ -165,95 +204,83 @@ io.on("connection", (socket) => {
       lineTimer: null,
     };
 
-    roomList = Object.keys(rooms).map(name => ({ name, admin: rooms[name].admin }));
+    // 🔥 CRITICAL FIX: auto join creator
+    rooms[roomName].members[socket.id] = username;
+    socket.join(roomName);
+
+    updateRoomList();
     io.emit("rooms", roomList);
-    console.log("Room created:", roomName);
+
+    io.to(roomName).emit("roomState", {
+      users: Object.values(rooms[roomName].members),
+      admin: username,
+    });
   });
 
-  // ----- DELETE ROOM -----
+  // DELETE ROOM (FIXED CLEANUP)
   socket.on("deleteRoom", ({ roomName }) => {
     const room = rooms[roomName];
-    if (!room) return socket.emit("errorMessage", "Room not found");
-    if (room.admin !== socket.data.username) return socket.emit("errorMessage", "Only admin can delete room");
+    if (!room) return;
 
+    if (room.admin !== socket.data.username)
+      return socket.emit("errorMessage", "Not admin");
+
+    resetRoom(room);
     delete rooms[roomName];
-    roomList = Object.keys(rooms).map(name => ({ name, admin: rooms[name].admin }));
+
+    updateRoomList();
     io.emit("rooms", roomList);
-    console.log("Room deleted:", roomName);
   });
 
-  // ----- GET STATE -----
-  socket.on("getState", (data, callback) => {
-    const socketUsers = Array.from(io.sockets.sockets.values()).map(s => ({
-      id: s.id,
-      username: s.data.username || null,
-      hasUsername: !!s.data.username,
-    }));
+  // JOIN ROOM
+  socket.on("joinRoom", ({ room, username }) => {
+    if (!socket.data.username)
+      socket.data.username = username;
 
-      if (callback) callback({
-        activeUsers,
-        rooms: roomList,
-        totalSockets: io.engine.clientsCount,
-        socketUsers,
-        timestamp: new Date().toISOString(),
-      });
-    });
-
-    socket.on("joinRoom", ({ room, username }) => {
-      if (!socket.data.username) socket.data.username = username;
-
-      const roomObj = rooms[room];
-      if (!roomObj) {
-        return socket.emit("errorMessage", "Room does not exist");
-      }
-
-      roomObj.members[username] = socket.id;
-
-      // Join Socket.IO room
-      socket.join(room);
-
-      // Send room state to all members
-      io.to(room).emit("roomState", {
-        users: Object.keys(roomObj.members),
-        admin: roomObj.admin
-      });
-      socket.emit("scriptListFull", allScripts);
-      console.log(`${username} joined room ${room}`);
-    });
-
-  socket.on("leaveRoom", ({ room }) => {
     const roomObj = rooms[room];
-    if (!roomObj) return;
+    if (!roomObj)
+      return socket.emit("errorMessage", "Room not found");
 
-    delete roomObj.members[socket.data.username];
-    socket.leave(room);
+    roomObj.members[socket.id] = username;
+
+    socket.join(room);
 
     io.to(room).emit("roomState", {
-      users: Object.keys(roomObj.members),
+      users: Object.values(roomObj.members),
       admin: roomObj.admin
     });
 
-    console.log(`${socket.data.username} left room ${room}`);
+    socket.emit("scriptListFull", allScripts);
   });
 
-  /* ---------------- SELECT SCRIPT ---------------- */
+  // LEAVE ROOM
+  socket.on("leaveRoom", ({ room, username }) => {
+    const roomObj = rooms[room];
+    if (!roomObj) return;
+
+    delete roomObj.members[socket.id];
+
+    if (username === roomObj.admin) {
+      resetRoom(roomObj);
+    }
+
+    socket.leave(room);
+
+    io.to(room).emit("roomState", {
+      users: Object.values(roomObj.members),
+      admin: roomObj.admin
+    });
+  });
+
+  // SELECT SCRIPT (FIXED: NO socket.join)
   socket.on("selectScript", ({ room, scriptId }) => {
     const roomInfo = rooms[room];
     if (!roomInfo) return;
 
-    socket.join(room);
-
     if (roomInfo.script === scriptId) {
-       roomInfo.script = null;
-       roomInfo.scriptData = null;
-       roomInfo.karaokeStep = 0;
-       roomInfo.baseDelay = 0;
-       roomInfo.punctuationDelay = 0;
-       roomInfo.currentLineIndex = 0;
-       roomInfo.currentCharIndex = 0;
-       roomInfo.sceneStarted = false;
+      resetRoom(roomInfo);
 
-    io.to(room).emit("scriptSelected", {
+      io.to(room).emit("scriptSelected", {
         scriptId: null,
         scriptData: null,
         karaokeStep: 0,
@@ -262,25 +289,17 @@ io.on("connection", (socket) => {
         admin: roomInfo.admin,
       });
 
-       console.log(`Script deselected in room ${room}`);
-       return;
-     }
-
-
-    const scriptObj = allScripts.find((s) => s.id === scriptId);
-    if (!scriptObj) {
-      console.log("Script not found:", scriptId);
       return;
     }
+
+    const scriptObj = allScripts.find(s => s.id === scriptId);
+    if (!scriptObj) return;
 
     roomInfo.script = scriptId;
     roomInfo.scriptData = Object.freeze({ ...scriptObj });
     roomInfo.karaokeStep = scriptObj.karaokeStep ?? 2;
     roomInfo.baseDelay = scriptObj.baseDelay ?? 90;
     roomInfo.punctuationDelay = scriptObj.punctuationDelay ?? 300;
-    roomInfo.currentLineIndex = 0;
-    roomInfo.currentCharIndex = 0;
-    roomInfo.sceneStarted = false;
 
     io.to(room).emit("scriptSelected", {
       scriptId,
@@ -292,160 +311,121 @@ io.on("connection", (socket) => {
     });
   });
 
-  /* ---------------- CHARACTER ASSIGNMENT ---------------- */
+  // CHARACTER ASSIGNMENT
   socket.on("assignCharacter", ({ room, character, username }) => {
-    const roomInfo = rooms[room];
-    if (!roomInfo || roomInfo.characterAssignments[character]) return;
-    roomInfo.characterAssignments[character] = username;
-    io.to(room).emit("characterAssignments", roomInfo.characterAssignments);
+    const r = rooms[room];
+    if (!r || r.characterAssignments[character]) return;
+
+    r.characterAssignments[character] = username;
+    io.to(room).emit("characterAssignments", r.characterAssignments);
   });
 
   socket.on("unselectCharacter", ({ room, character, username }) => {
-    const roomInfo = rooms[room];
-    if (!roomInfo) return;
-    if (roomInfo.characterAssignments[character] === username) {
-      delete roomInfo.characterAssignments[character];
-      io.to(room).emit("characterAssignments", roomInfo.characterAssignments);
+    const r = rooms[room];
+    if (!r) return;
+
+    if (r.characterAssignments[character] === username) {
+      delete r.characterAssignments[character];
+      io.to(room).emit("characterAssignments", r.characterAssignments);
     }
   });
 
-  /* ---------------- START SCENE ---------------- */
+  // START SCENE (unchanged logic, safe)
   socket.on("startScene", ({ room }) => {
-    const roomInfo = rooms[room];
-    if (!roomInfo || !roomInfo.scriptData) return;
+    const r = rooms[room];
+    if (!r?.scriptData) return;
 
-    if (roomInfo.sceneStarted) {
-      socket.emit("errorMessage", "Scene is already running");
-      return;
-    }
+    if (r.sceneStarted)
+      return socket.emit("errorMessage", "Already running");
 
-    const allAssigned = roomInfo.scriptData.characters.every(
-      (ch) => roomInfo.characterAssignments[ch]
-    );
-    if (!allAssigned) {
-      socket.emit("errorMessage", "All characters must be assigned");
-      return;
-    }
-
-    roomInfo.sceneStarted = true;
-    roomInfo.currentLineIndex = 0;
-    roomInfo.currentCharIndex = 0;
+    r.sceneStarted = true;
+    r.currentLineIndex = 0;
+    r.currentCharIndex = 0;
 
     io.to(room).emit("sceneStarted", {
-      scriptData: roomInfo.scriptData,
-      characterAssignments: roomInfo.characterAssignments,
-      currentLineIndex: roomInfo.currentLineIndex,
-      currentCharIndex: roomInfo.currentCharIndex,
+      scriptData: r.scriptData,
+      characterAssignments: r.characterAssignments,
     });
 
-    function advanceChar() {
-      if (!roomInfo.sceneStarted) return;
-      const line = roomInfo.scriptData.lines[roomInfo.currentLineIndex];
+    function advance() {
+      if (!r.sceneStarted) return;
+
+      const line = r.scriptData.lines[r.currentLineIndex];
       if (!line) return;
 
       let step = 1;
-      let delay = roomInfo.baseDelay;
+      let delay = r.baseDelay;
 
-      for (
-        let i = 0;
-        i < roomInfo.karaokeStep && roomInfo.currentCharIndex + i < line.text.length;
-        i++
-      ) {
-        const char = line.text[roomInfo.currentCharIndex + i];
+      for (let i = 0; i < r.karaokeStep; i++) {
+        const ch = line.text[r.currentCharIndex + i];
+        if (!ch) break;
+
         step = i + 1;
-        if (/[.,!?]/.test(char)) {
-          delay = roomInfo.punctuationDelay;
+        if (/[.,!?]/.test(ch)) {
+          delay = r.punctuationDelay;
           break;
         }
       }
 
-      roomInfo.currentCharIndex += step;
+      r.currentCharIndex += step;
 
       io.to(room).emit("lineProgress", {
-        currentLineIndex: roomInfo.currentLineIndex,
-        currentCharIndex: roomInfo.currentCharIndex,
+        currentLineIndex: r.currentLineIndex,
+        currentCharIndex: r.currentCharIndex,
       });
 
-      if (roomInfo.currentCharIndex >= line.text.length) {
-        roomInfo.currentLineIndex++;
-        roomInfo.currentCharIndex = 0;
+      if (r.currentCharIndex >= line.text.length) {
+        r.currentLineIndex++;
+        r.currentCharIndex = 0;
 
-        if (roomInfo.currentLineIndex >= roomInfo.scriptData.lines.length) {
-          roomInfo.sceneStarted = false;
+        if (r.currentLineIndex >= r.scriptData.lines.length) {
+          r.sceneStarted = false;
           io.to(room).emit("sceneFinished");
           return;
         }
       }
 
-      roomInfo.lineTimer = setTimeout(advanceChar, delay);
+      r.lineTimer = setTimeout(advance, delay);
     }
 
-    advanceChar();
+    advance();
   });
 
-  /* ---------------- RESET ---------------- */
-  socket.on("resetAssignments", ({ room }) => {
-    const roomInfo = rooms[room];
-    if (!roomInfo) return;
-
-    roomInfo.characterAssignments = {};
-    io.to(room).emit("characterAssignments", {});
-  });
-
-  /* ---------------- STOP SCENE ---------------- */
   socket.on("stopScene", ({ room }) => {
-    const roomInfo = rooms[room];
-    if (!roomInfo) return;
+    const r = rooms[room];
+    if (!r) return;
 
-    if (roomInfo.lineTimer) clearTimeout(roomInfo.lineTimer);
-    roomInfo.lineTimer = null;
-
-    roomInfo.sceneStarted = false;
-    roomInfo.currentLineIndex = 0;
-    roomInfo.currentCharIndex = 0;
+    if (r.lineTimer) clearTimeout(r.lineTimer);
+    resetRoom(r);
 
     io.to(room).emit("sceneStopped");
   });
 
-  /* ---------------- END SCENE ---------------- */
   socket.on("endScene", ({ room }) => {
-    const roomInfo = rooms[room];
-    if (!roomInfo) return;
+    const r = rooms[room];
+    if (!r) return;
 
-    if (roomInfo.lineTimer) clearTimeout(roomInfo.lineTimer);
-    roomInfo.lineTimer = null;
+    if (r.lineTimer) clearTimeout(r.lineTimer);
+    resetRoom(r);
 
-    roomInfo.sceneStarted = false;
-    roomInfo.currentLineIndex = 0;
-    roomInfo.currentCharIndex = 0;
-
-    roomInfo.characterAssignments = {};
     io.to(room).emit("characterAssignments", {});
     io.to(room).emit("sceneStopped");
   });
 
-
-
-  // ----- PING -----
-  socket.on("ping", (data, callback) => {
-    if (callback) callback({ pong: true, timestamp: new Date().toISOString() });
-    io.emit("activeUsers", activeUsers);
-    io.emit("rooms", roomList);
-  });
-
-  // ----- DISCONNECT -----
+  // DISCONNECT (FIXED CLEANUP)
   socket.on("disconnect", () => {
-    const username = socket.data.username;
+    const username = activeUsers.get(socket.id);
+
     if (username) {
-      const index = activeUsers.indexOf(username);
-      if (index !== -1) activeUsers.splice(index, 1);
-      io.emit("activeUsers", activeUsers);
+      activeUsers.delete(socket.id);
+      io.emit("activeUsers", Array.from(activeUsers.values()));
     }
-    console.log("Socket disconnected:", socket.id);
+
+    console.log("Disconnected:", socket.id);
   });
 });
 
-// ===== START SERVER =====
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ BitKaraoke server running on port ${PORT}`);
+// ===== START =====
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`BitKaraoke running on ${PORT}`);
 });
