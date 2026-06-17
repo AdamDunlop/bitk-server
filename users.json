@@ -1,5 +1,8 @@
 {
   "hello123": {
     "password": "$2b$12$UJyK11qj/WauenYMD.5m4etdhOniS3Phf5fHabuJOMPSaiCBURTVy"
+  },
+  "test": {
+    "password": "$2b$12$3fn39lD32CovlAFS1W/.buF7pcReSl9zqoPIkCx2sZo9wu0qzbwMC"
   }
 }

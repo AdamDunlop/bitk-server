@@ -233,26 +233,37 @@ io.on("connection", (socket) => {
     if (room.admin !== socket.data.username)
       return socket.emit("errorMessage", "Not admin");
 
-    resetRoom(room);
+    // FIRST: delete room state
     delete rooms[roomName];
-
     updateRoomList();
+
+    // THEN: broadcast globally (reliable)
+    io.emit("roomDeleted", {
+      message: "This room was deleted by the admin"
+    });
+
     io.emit("rooms", roomList);
   });
 
   // JOIN ROOM
   socket.on("joinRoom", ({ room, username }) => {
-    const roomObj = rooms[room]; // ✅ define first
-
-    if (!roomObj)
-      return socket.emit("errorMessage", "Room not found");
-
     if (!socket.data.username)
       socket.data.username = username;
 
+    const roomObj = rooms[room];
+    if (!roomObj)
+      return socket.emit("errorMessage", "Room not found");
+
     roomObj.members[socket.id] = username;
 
-    socket.join(room);
+    socket.join(room); // correct
+
+    socket.emit("roomSync", {
+      scriptId: roomObj.script,
+      scriptData: roomObj.scriptData,
+      characterAssignments: roomObj.characterAssignments,
+      sceneStarted: roomObj.sceneStarted,
+    });
 
     io.to(room).emit("roomState", {
       users: Object.values(roomObj.members),
