@@ -1,14 +1,5 @@
-[
-  {
-    "username": "hello123",
-    "password": "12345"
-  },
-  {
-    "username": "hello1234",
-    "password": "12345"
-  },
-  {
-    "username": "test12345",
-    "password": "linkedin"
+{
+  "hello123": {
+    "password": "$2b$12$UJyK11qj/WauenYMD.5m4etdhOniS3Phf5fHabuJOMPSaiCBURTVy"
   }
-]
+}
