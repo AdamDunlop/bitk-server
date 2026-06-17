@@ -110,7 +110,7 @@ const io = new Server(server, {
 });
 
 // ===== STATE =====
-const activeUsers = new Map(); // socket.id -> username
+const activeUsers = new Map(); // username -> socket.id
 let rooms = {};
 let roomList = [];
 
@@ -143,21 +143,25 @@ function updateRoomList() {
   }));
 }
 
+//Reset ROOM
 function resetRoom(room) {
   if (!room) return;
 
-  if (room.lineTimer) clearTimeout(room.lineTimer);
+  if (room.lineTimer) {
+    clearTimeout(room.lineTimer);
+    room.lineTimer = null;
+  }
 
-  room.script = null;
-  room.scriptData = null;
   room.sceneStarted = false;
-  room.characterAssignments = {};
   room.currentLineIndex = 0;
   room.currentCharIndex = 0;
   room.karaokeStep = 2;
   room.baseDelay = 90;
   room.punctuationDelay = 300;
-  room.lineTimer = null;
+  room.sceneToken++;
+  // room.scriptData = null;
+  // room.script = null;
+  // room.characterAssignments = {}; (optional depending on UX)
 }
 
 // ===== SOCKET =====
@@ -169,16 +173,19 @@ io.on("connection", (socket) => {
   // LOGIN SOCKET
   socket.on("login", ({ username }, cb) => {
     socket.data.username = username;
+
     activeUsers.set(socket.id, username);
 
+    // ADD THIS
     socket.emit("rooms", roomList);
+
     socket.emit("scriptListFull", allScripts);
     io.emit("activeUsers", Array.from(activeUsers.values()));
 
     cb?.({ success: true });
   });
 
-  // CREATE ROOM
+    // CREATE ROOM
   socket.on("createRoom", ({ roomName }) => {
     const username = socket.data.username;
     if (!username) return socket.emit("errorMessage", "Unauthorized");
@@ -192,6 +199,7 @@ io.on("connection", (socket) => {
     rooms[roomName] = {
       admin: username,
       members: {},
+      sceneToken: 0,
       script: null,
       scriptData: null,
       characterAssignments: {},
@@ -204,7 +212,7 @@ io.on("connection", (socket) => {
       lineTimer: null,
     };
 
-    // 🔥 CRITICAL FIX: auto join creator
+    // CRITICAL FIX: auto join creator
     rooms[roomName].members[socket.id] = username;
     socket.join(roomName);
 
@@ -234,12 +242,13 @@ io.on("connection", (socket) => {
 
   // JOIN ROOM
   socket.on("joinRoom", ({ room, username }) => {
-    if (!socket.data.username)
-      socket.data.username = username;
+    const roomObj = rooms[room]; // ✅ define first
 
-    const roomObj = rooms[room];
     if (!roomObj)
       return socket.emit("errorMessage", "Room not found");
+
+    if (!socket.data.username)
+      socket.data.username = username;
 
     roomObj.members[socket.id] = username;
 
@@ -247,22 +256,17 @@ io.on("connection", (socket) => {
 
     io.to(room).emit("roomState", {
       users: Object.values(roomObj.members),
-      admin: roomObj.admin
+      admin: roomObj.admin,
     });
 
     socket.emit("scriptListFull", allScripts);
   });
-
   // LEAVE ROOM
   socket.on("leaveRoom", ({ room, username }) => {
     const roomObj = rooms[room];
     if (!roomObj) return;
 
     delete roomObj.members[socket.id];
-
-    if (username === roomObj.admin) {
-      resetRoom(roomObj);
-    }
 
     socket.leave(room);
 
@@ -335,8 +339,13 @@ io.on("connection", (socket) => {
     const r = rooms[room];
     if (!r?.scriptData) return;
 
+    // already running check (separate from token system)
     if (r.sceneStarted)
       return socket.emit("errorMessage", "Already running");
+
+    // NEW RUN ID
+    r.sceneToken++;
+    const token = r.sceneToken;
 
     r.sceneStarted = true;
     r.currentLineIndex = 0;
@@ -348,7 +357,7 @@ io.on("connection", (socket) => {
     });
 
     function advance() {
-      if (!r.sceneStarted) return;
+      if (!r.sceneStarted || token !== r.sceneToken) return;
 
       const line = r.scriptData.lines[r.currentLineIndex];
       if (!line) return;
@@ -414,14 +423,28 @@ io.on("connection", (socket) => {
 
   // DISCONNECT (FIXED CLEANUP)
   socket.on("disconnect", () => {
-    const username = activeUsers.get(socket.id);
+    const username = socket.data.username;
 
     if (username) {
-      activeUsers.delete(socket.id);
-      io.emit("activeUsers", Array.from(activeUsers.values()));
-    }
+      activeUsers.delete(socket.id); //
 
-    console.log("Disconnected:", socket.id);
+      for (const roomName in rooms) {
+        const room = rooms[roomName];
+
+        for (const id in room.members) {
+          if (room.members[id] === username) {
+            delete room.members[id];
+          }
+        }
+
+        io.to(roomName).emit("roomState", {
+          users: Object.values(room.members),
+          admin: room.admin,
+        });
+      }
+
+      io.emit("activeUsers", Array.from(activeUsers.values())); // OK
+    }
   });
 });
 
